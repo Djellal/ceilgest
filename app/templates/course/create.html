@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Create New Course</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">Code</label>
+                    <input type="text" class="form-control" name="code" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" name="name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Arabic Name</label>
+                    <input type="text" class="form-control" name="name_ar" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Duration (hours)</label>
+                    <input type="number" class="form-control" name="duration" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Course Type</label>
+                    <select class="form-select" name="course_type" required>
+                        <option value="Language">Language</option>
+                        <option value="Workshop">Workshop</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Image</label>
+                    <input type="file" class="form-control" name="image">
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" name="is_active" checked>
+                    <label class="form-check-label">Active</label>
+                </div>
+                
+                <div class="text-end">
+                    <a href="{{ url_for('course.list_courses') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

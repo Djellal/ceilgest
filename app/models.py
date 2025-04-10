@@ -103,3 +103,18 @@ class Profession(db.Model):
 
     def __repr__(self):
         return f'<Profession {self.name}>'
+
+
+class Course(db.Model):
+    __tablename__ = 'courses'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(300), nullable=False)
+    name_ar = db.Column(db.String(300), nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
+    image = db.Column(db.String(255))  # Path to image file
+    course_type = db.Column(db.Enum('Language', 'Workshop', name='course_type'), nullable=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
+
+    def __repr__(self):
+        return f'<Course {self.code} - {self.name}>'

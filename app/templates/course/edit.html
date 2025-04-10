@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Edit Course</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label class="form-label">Code</label>
+                    <input type="text" class="form-control" name="code" value="{{ course.code }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" name="name" value="{{ course.name }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Arabic Name</label>
+                    <input type="text" class="form-control" name="name_ar" value="{{ course.name_ar }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Duration (hours)</label>
+                    <input type="number" class="form-control" name="duration" value="{{ course.duration }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Course Type</label>
+                    <select class="form-select" name="course_type" required>
+                        <option value="Language" {% if course.course_type == 'Language' %}selected{% endif %}>Language</option>
+                        <option value="Workshop" {% if course.course_type == 'Workshop' %}selected{% endif %}>Workshop</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Current Image</label>
+                    {% if course.image %}
+                        <div class="mb-2">
+                            <img src="{{ url_for('static', filename='uploads/' + course.image) }}" 
+                                 alt="Course Image" 
+                                 style="max-height: 150px; max-width: 100%; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
+                            <div class="mt-2">
+                                <a href="{{ url_for('static', filename='uploads/' + course.image) }}" 
+                                   target="_blank" 
+                                   class="btn btn-sm btn-outline-primary">View Full Image</a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-muted">No image uploaded</div>
+                    {% endif %}
+                    <input type="file" class="form-control mt-2" name="image">
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" name="is_active" {% if course.is_active %}checked{% endif %}>
+                    <label class="form-check-label">Active</label>
+                </div>
+                
+                <div class="text-end">
+                    <a href="{{ url_for('course.list_courses') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
