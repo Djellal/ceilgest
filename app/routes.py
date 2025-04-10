@@ -127,3 +127,9 @@ def admin_dashboard():
     return render_template('admin_dashboard.html', settings=settings)  # Pass settings to template
     # Add your admin dashboard statistics and data here
     return render_template('admin_dashboard.html')
+
+
+@bp.route('/about')
+def about():
+    settings = AppSettings.query.get(1)  # Get settings from database
+    return render_template('about.html', settings=settings)
