@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
-from app.models import db, AppSettings, Session
 from werkzeug.utils import secure_filename
 import os
+from app.models import db, AppSettings, Session
 
 bp = Blueprint('app_settings', __name__)
 
@@ -18,6 +18,16 @@ def manage_settings():
     
     if request.method == 'POST':
         try:
+            # Handle logo upload
+            if 'logo' in request.files:
+                logo = request.files['logo']
+                if logo.filename != '':
+                    filename = secure_filename(logo.filename)
+                    upload_path = os.path.join(current_app.root_path, 'static', 'uploads')
+                    os.makedirs(upload_path, exist_ok=True)
+                    logo.save(os.path.join(upload_path, filename))
+                    settings.organization_logo = filename
+            
             settings.organization_name = request.form['organization_name']
             settings.address = request.form['address']
             settings.tel = request.form['tel']
