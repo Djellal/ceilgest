@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Sessions Management</h2>
+    <a href="{{ url_for('session.create_session') }}" class="btn btn-primary mb-3">Create New Session</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Arabic Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+            <tr>
+                <td>{{ session.code }}</td>
+                <td>{{ session.name }}</td>
+                <td>{{ session.name_ar }}</td>
+                <td>{{ session.start_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ session.end_date.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <a href="{{ url_for('session.edit_session', id=session.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('session.delete_session', id=session.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

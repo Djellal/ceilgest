@@ -10,6 +10,21 @@ class Role(db.Model):
     name = db.Column(db.String(50), unique=True)
     users = db.relationship('User', backref='role', lazy=True)
 
+class Session(db.Model):
+    __tablename__ = 'sessions'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(20), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    name_ar = db.Column(db.String(100), nullable=False)  # Arabic name
+    start_date = db.Column(db.DateTime, nullable=False)
+    end_date = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), 
+                          onupdate=db.func.current_timestamp())
+
+    def __repr__(self):
+        return f'<Session {self.code} - {self.name}>'
+
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
