@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
-from app.models import db, User, Role
+from app.models import db, User, Role, AppSettings  # Add AppSettings to imports
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import login_manager
 
@@ -31,6 +31,8 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
         
+    settings = AppSettings.query.get(1)  # Add this line to get settings
+        
     if request.method == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')
@@ -53,7 +55,7 @@ def register():
         flash('Registration successful! Please login.')
         return redirect(url_for('auth.login'))
         
-    return render_template('auth/register.html')
+    return render_template('auth/register.html', settings=settings)  # Pass settings here
 
 @bp.route('/logout')
 @login_required
