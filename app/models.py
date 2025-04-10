@@ -118,3 +118,18 @@ class Course(db.Model):
 
     def __repr__(self):
         return f'<Course {self.code} - {self.name}>'
+
+class CourseLevel(db.Model):
+    __tablename__ = 'course_levels'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(300), nullable=False)
+    name_ar = db.Column(db.String(300), nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    previous_level_id = db.Column(db.Integer, db.ForeignKey('course_levels.id'))
+    
+    course = db.relationship('Course', backref='levels')
+    previous_level = db.relationship('CourseLevel', remote_side=[id])
+    
+    def __repr__(self):
+        return f'<CourseLevel {self.name}>'
