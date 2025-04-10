@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>{{ course.name }} - Levels</h2>
+    <a href="{{ url_for('course_level.create_level', course_id=course.id) }}" class="btn btn-primary mb-3">Add New Level</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Arabic Name</th>
+                <th>Duration</th>
+                <th>Prerequisite</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for level in course.levels %}
+            <tr>
+                <td>{{ level.name }}</td>
+                <td>{{ level.name_ar }}</td>
+                <td>{{ level.duration }} hours</td>
+                <td>{{ level.previous_level.name if level.previous_level else 'None' }}</td>
+                <td>
+                    <a href="{{ url_for('course_level.edit_level', id=level.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('course_level.delete_level', id=level.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

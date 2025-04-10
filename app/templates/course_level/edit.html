@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Edit Level: {{ level.name }}</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" name="name" value="{{ level.name }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Arabic Name</label>
+                    <input type="text" class="form-control" name="name_ar" value="{{ level.name_ar }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Duration (hours)</label>
+                    <input type="number" class="form-control" name="duration" value="{{ level.duration }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Prerequisite Level</label>
+                    <select class="form-select" name="previous_level_id">
+                        <option value="">None</option>
+                        {% for l in level.course.levels %}
+                            {% if l.id != level.id %}
+                            <option value="{{ l.id }}" {% if level.previous_level_id == l.id %}selected{% endif %}>
+                                {{ l.name }}
+                            </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="text-end">
+                    <a href="{{ url_for('course_level.list_levels', course_id=level.course_id) }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

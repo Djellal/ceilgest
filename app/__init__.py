@@ -8,6 +8,7 @@ from app.app_settings import bp as app_settings_bp
 from app.state import bp as state_bp
 from app.profession import bp as profession_bp
 from app.course import bp as course_bp
+from app.course_level import bp as course_level_bp
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -31,5 +32,6 @@ def create_app(config_class=Config):
     app.register_blueprint(state_bp)
     app.register_blueprint(profession_bp)
     app.register_blueprint(course_bp)
+    app.register_blueprint(course_level_bp)
 
     return app

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Add New Level to {{ course.name }}</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" class="form-control" name="name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Arabic Name</label>
+                    <input type="text" class="form-control" name="name_ar" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Duration (hours)</label>
+                    <input type="number" class="form-control" name="duration" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Prerequisite Level</label>
+                    <select class="form-select" name="previous_level_id">
+                        <option value="">None</option>
+                        {% for level in course.levels %}
+                        <option value="{{ level.id }}">{{ level.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="text-end">
+                    <a href="{{ url_for('course_level.list_levels', course_id=course.id) }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
