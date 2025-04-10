@@ -13,6 +13,8 @@ def load_user(user_id):
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
+        if current_user.is_student:
+            return redirect(url_for('main.student_dashboard'))
         return redirect(url_for('main.index'))
         
     settings = AppSettings.query.get(1)  # Add this line to get settings
@@ -24,8 +26,12 @@ def login():
         
         if user and user.check_password(password):
             login_user(user)
+            if user.is_student:
+                return redirect(url_for('main.student_dashboard'))
             return redirect(url_for('main.index'))
-        flash('Invalid username or password')
+        else:
+            flash('Invalid username or password', 'danger')
+    
     return render_template('auth/login.html', settings=settings)  # Pass settings here
 
 @bp.route('/register', methods=['GET', 'POST'])

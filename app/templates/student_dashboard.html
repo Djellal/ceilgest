@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2>Student Dashboard</h2>
+        </div>
+        <div class="card-body">
+            <h4 class="mb-4">Active Registrations ({{ current_session.name }})</h4>
+            
+            {% if active_registrations %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Level</th>
+                            <th>Registration Date</th>
+                            <th>Fee</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reg in active_registrations %}
+                        <tr>
+                            <td>{{ reg.course.name }}</td>
+                            <td>{{ reg.course_level.name }}</td>
+                            <td>{{ reg.registration_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ reg.paid_fee_value }} DZD</td>
+                            <td>
+                                <span class="badge bg-success">Active</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                You have no active course registrations in the current session.
+            </div>
+            {% endif %}
+
+            <h4 class="mt-5 mb-4">Previous Registrations</h4>
+            
+            {% if past_registrations %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Session</th>
+                            <th>Course</th>
+                            <th>Level</th>
+                            <th>Registration Date</th>
+                            <th>Fee</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reg in past_registrations %}
+                        <tr>
+                            <td>{{ reg.session.name }}</td>
+                            <td>{{ reg.course.name }}</td>
+                            <td>{{ reg.course_level.name }}</td>
+                            <td>{{ reg.registration_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ reg.paid_fee_value }} DZD</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                You have no previous course registrations.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

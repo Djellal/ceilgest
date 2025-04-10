@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2>Course Registration - {{ current_session.name }}</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <h4 class="mb-3">Personal Information</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">First Name (English)</label>
+                            <input type="text" class="form-control" name="first_name" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Last Name (English)</label>
+                            <input type="text" class="form-control" name="last_name" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">First Name (Arabic)</label>
+                            <input type="text" class="form-control" name="first_name_ar" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Last Name (Arabic)</label>
+                            <input type="text" class="form-control" name="last_name_ar" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Birth Date</label>
+                            <input type="date" class="form-control" name="birth_date" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" name="tel" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control" name="address" required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Birth State</label>
+                            <select class="form-select" name="birth_state" required>
+                                {% for state in states %}
+                                <option value="{{ state.id }}">{{ state.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Birth Municipality</label>
+                            <select class="form-select" name="birth_municipality" required>
+                                {% for state in states %}
+                                {% for municipality in state.municipalities %}
+                                <option value="{{ municipality.id }}">{{ municipality.name }}</option>
+                                {% endfor %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Profession</label>
+                    <select class="form-select" name="profession" required>
+                        {% for profession in professions %}
+                        <option value="{{ profession.id }}" data-fee="{{ profession.fee_value }}">
+                            {{ profession.name }} (Fee: {{ profession.fee_value }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <h4 class="mt-4 mb-3">Course Information</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Course</label>
+                            <select class="form-select" name="course" id="course-select" required>
+                                {% for course in courses %}
+                                <option value="{{ course.id }}">{{ course.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Course Level</label>
+                            <select class="form-select" name="course_level" id="level-select" required>
+                                {% for level in levels %}
+                                <option value="{{ level.id }}" data-course="{{ level.course_id }}">
+                                    {{ level.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Fee Value</label>
+                    <input type="number" step="0.01" class="form-control" name="fee_value" id="fee-input" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Additional Notes</label>
+                    <textarea class="form-control" name="notes"></textarea>
+                </div>
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" name="terms_accepted" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I accept the registration terms and conditions
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Registration</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Update levels when course changes
+    const courseSelect = document.getElementById('course-select');
+    const levelSelect = document.getElementById('level-select');
+    
+    courseSelect.addEventListener('change', function() {
+        const courseId = this.value;
+        Array.from(levelSelect.options).forEach(option => {
+            option.style.display = option.dataset.course === courseId ? '' : 'none';
+        });
+        levelSelect.value = Array.from(levelSelect.options).find(opt => opt.style.display !== 'none')?.value || '';
+    });
+
+    // Initialize fee value
+    const professionSelect = document.querySelector('select[name="profession"]');
+    const feeInput = document.getElementById('fee-input');
+    
+    professionSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        feeInput.value = selectedOption.dataset.fee;
+    });
+
+    // Trigger initial change events
+    courseSelect.dispatchEvent(new Event('change'));
+    professionSelect.dispatchEvent(new Event('change'));
+});
+</script>
+{% endblock %}
