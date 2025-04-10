@@ -65,6 +65,8 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('session.list_sessions') }}">Sessions</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('app_settings.manage_settings') }}">Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('state.list_states') }}">States</a></li>
                         </ul>
                     </li>
                     {% endif %}

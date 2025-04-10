@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Municipalities in {{ state.name }}</h2>
+    <a href="{{ url_for('state.create_municipality', state_id=state.id) }}" class="btn btn-primary mb-3">Create New Municipality</a>
+    <a href="{{ url_for('state.list_states') }}" class="btn btn-secondary mb-3">Back to States</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Arabic Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for municipality in state.municipalities %}
+            <tr>
+                <td>{{ municipality.name }}</td>
+                <td>{{ municipality.name_ar }}</td>
+                <td>
+                    <a href="{{ url_for('state.edit_municipality', id=municipality.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('state.delete_municipality', id=municipality.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

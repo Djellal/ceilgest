@@ -72,3 +72,24 @@ class AppSettings(db.Model):
     
     def __repr__(self):
         return f'<AppSettings {self.organization_name}>'
+
+
+class State(db.Model):
+    __tablename__ = 'states'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(300), nullable=False)
+    name_ar = db.Column(db.String(300), nullable=False)
+    municipalities = db.relationship('Municipality', backref='state', lazy=True)
+
+    def __repr__(self):
+        return f'<State {self.name}>'
+
+class Municipality(db.Model):
+    __tablename__ = 'municipalities'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(300), nullable=False)
+    name_ar = db.Column(db.String(300), nullable=False)
+    state_id = db.Column(db.Integer, db.ForeignKey('states.id'), nullable=False)
+
+    def __repr__(self):
+        return f'<Municipality {self.name}>'

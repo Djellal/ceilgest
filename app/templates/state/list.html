@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>States Management</h2>
+    <a href="{{ url_for('state.create_state') }}" class="btn btn-primary mb-3">Create New State</a>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Arabic Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for state in states %}
+            <tr>
+                <td>{{ state.name }}</td>
+                <td>{{ state.name_ar }}</td>
+                <td>
+                    <a href="{{ url_for('state.list_municipalities', state_id=state.id) }}" class="btn btn-sm btn-info">Municipalities</a>
+                    <a href="{{ url_for('state.edit_state', id=state.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ url_for('state.delete_state', id=state.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
