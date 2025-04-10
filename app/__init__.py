@@ -11,6 +11,7 @@ from app.course import bp as course_bp
 from app.course_level import bp as course_level_bp
 from flask_bootstrap import Bootstrap5
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_ckeditor import CKEditor
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -20,6 +21,7 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     bootstrap = Bootstrap5(app)
     app.config.from_object(config_class)
+    ckeditor = CKEditor(app)
     
     # Enable SQL query recording
     app.config['SQLALCHEMY_RECORD_QUERIES'] = True

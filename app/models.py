@@ -67,6 +67,7 @@ class AppSettings(db.Model):
     youtube = db.Column(db.String(100))
     current_session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
     registration_opened = db.Column(db.Boolean, default=False)
+    terms_and_conditions = db.Column(db.Text)  # New field for terms and conditions
     
     current_session = db.relationship('Session', backref='app_settings')
     

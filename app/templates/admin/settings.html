@@ -137,6 +137,26 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label">Terms and Conditions</label>
+                            {% block scripts %}
+                            {{ super() }}
+                            {{ ckeditor.load() }}
+                            <script>
+                                CKEDITOR.replace('terms_and_conditions', {
+                                    toolbar: [
+                                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike'] },
+                                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                                        { name: 'links', items: ['Link', 'Unlink'] },
+                                        { name: 'document', items: ['Source'] }
+                                    ]
+                                });
+                            </script>
+                            {% endblock %}
+                            <textarea id="terms_and_conditions" name="terms_and_conditions" class="form-control">
+                                {{ settings.terms_and_conditions or '' }}
+                            </textarea>
+                        </div>
                     </div>
                 </div>
 

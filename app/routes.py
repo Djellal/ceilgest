@@ -9,7 +9,8 @@ bp = Blueprint('main', __name__)
 @bp.route('/')
 def index():
     settings = AppSettings.query.get(1)
-    return render_template('index.html', settings=settings)
+    courses = Course.query.filter_by(is_active=True).all()
+    return render_template('index.html', settings=settings, courses=courses)
 
 @bp.app_errorhandler(404)
 def page_not_found(e):
@@ -113,3 +114,16 @@ def student_dashboard():
         past_registrations=past_registrations,
         current_session=current_session
     )
+
+
+@bp.route('/admin-dashboard')
+@login_required
+def admin_dashboard():
+    if not current_user.is_admin:
+        flash('Access denied', 'danger')
+        return redirect(url_for('main.index'))
+    
+    settings = AppSettings.query.get(1)  # Add this line to get settings
+    return render_template('admin_dashboard.html', settings=settings)  # Pass settings to template
+    # Add your admin dashboard statistics and data here
+    return render_template('admin_dashboard.html')

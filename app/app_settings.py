@@ -3,8 +3,14 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import os
 from app.models import db, AppSettings, Session
+from flask_ckeditor import CKEditor
 
 bp = Blueprint('app_settings', __name__)
+
+from flask_ckeditor import CKEditor
+
+# Initialize CKEditor in your app factory or where you initialize extensions
+# ckeditor = CKEditor(app)
 
 @bp.route('/admin/settings', methods=['GET', 'POST'])
 @login_required
@@ -39,6 +45,7 @@ def manage_settings():
             settings.youtube = request.form['youtube']
             settings.current_session_id = request.form['current_session_id']
             settings.registration_opened = 'registration_opened' in request.form
+            settings.terms_and_conditions = request.form.get('terms_and_conditions', '')
             
             db.session.commit()
             flash('Settings updated successfully', 'success')
