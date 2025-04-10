@@ -15,6 +15,8 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
         
+    settings = AppSettings.query.get(1)  # Add this line to get settings
+        
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -24,7 +26,7 @@ def login():
             login_user(user)
             return redirect(url_for('main.index'))
         flash('Invalid username or password')
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', settings=settings)  # Pass settings here
 
 @bp.route('/register', methods=['GET', 'POST'])
 def register():

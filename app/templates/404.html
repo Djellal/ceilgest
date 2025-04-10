@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="mb-4">
+        <svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- Background -->
+            <rect width="300" height="200" fill="#f8f9fa" rx="10" ry="10"/>
+            
+            <!-- Sad face -->
+            <circle cx="150" cy="100" r="60" fill="#f8d7da" stroke="#dc3545" stroke-width="2"/>
+            <circle cx="125" cy="85" r="8" fill="#dc3545"/>
+            <circle cx="175" cy="85" r="8" fill="#dc3545"/>
+            <path d="M120 130 Q150 110 180 130" stroke="#dc3545" stroke-width="4" fill="none"/>
+            
+            <!-- 404 text -->
+            <text x="150" y="180" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle" fill="#dc3545">404</text>
+        </svg>
+    </div>
+    <h1 class="display-1">404</h1>
+    <p class="lead">Page Not Found</p>
+    <p>The page you are looking for doesn't exist or has been moved.</p>
+    <a href="{{ url_for('main.index') }}" class="btn btn-primary">Go to Homepage</a>
+</div>
+{% endblock %}
