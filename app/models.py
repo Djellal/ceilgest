@@ -133,3 +133,43 @@ class CourseLevel(db.Model):
     
     def __repr__(self):
         return f'<CourseLevel {self.name}>'
+
+
+class Course_Registration(db.Model):
+    __tablename__ = 'course_registrations'
+    id = db.Column(db.Integer, primary_key=True)
+    inscription_code = db.Column(db.String(20), unique=True, nullable=False)
+    first_name = db.Column(db.String(100), nullable=False)
+    last_name = db.Column(db.String(100), nullable=False)
+    first_name_ar = db.Column(db.String(100), nullable=False)
+    last_name_ar = db.Column(db.String(100), nullable=False)
+    birth_date = db.Column(db.Date, nullable=False)
+    birth_state_id = db.Column(db.Integer, db.ForeignKey('states.id'), nullable=False)
+    birth_municipality_id = db.Column(db.Integer, db.ForeignKey('municipalities.id'), nullable=False)
+    address = db.Column(db.Text, nullable=False)
+    tel = db.Column(db.String(20), nullable=False)
+    profession_id = db.Column(db.Integer, db.ForeignKey('professions.id'), nullable=False)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    course_level_id = db.Column(db.Integer, db.ForeignKey('course_levels.id'), nullable=False)
+    registration_date = db.Column(db.DateTime, default=db.func.current_timestamp(), nullable=False)
+    notes = db.Column(db.Text)
+    paid_fee_value = db.Column(db.Float, nullable=False)
+    registration_terms_accepted = db.Column(db.Boolean, nullable=False, default=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'), nullable=False)
+
+    birth_state = db.relationship('State')
+    birth_municipality = db.relationship('Municipality')
+    profession = db.relationship('Profession')
+    course = db.relationship('Course')
+    course_level = db.relationship('CourseLevel')
+    user = db.relationship('User')
+    session = db.relationship('Session')
+
+    def __repr__(self):
+        return f'<Course_Registration {self.inscription_code}>'
+
+    @staticmethod
+    def generate_inscription_code():
+        from datetime import datetime
+        return f"REG-{datetime.now().strftime('%Y%m%d%H%M%S')}"
