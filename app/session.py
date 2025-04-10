@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from app.models import db, Session
+from app.models import db, Session, AppSettings
 from datetime import datetime
 
 bp = Blueprint('session', __name__)
@@ -12,7 +12,8 @@ def list_sessions():
         flash('Access denied', 'danger')
         return redirect(url_for('main.index'))
     sessions = Session.query.all()
-    return render_template('session/list.html', sessions=sessions)
+    settings = AppSettings.query.get(1)  # Get settings
+    return render_template('session/list.html', sessions=sessions, settings=settings)
 
 @bp.route('/session/create', methods=['GET', 'POST'])
 @login_required
