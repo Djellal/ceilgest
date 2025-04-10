@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from app.models import db, Course, AppSettings
+from werkzeug.utils import secure_filename
+import os
 
 bp = Blueprint('course', __name__, url_prefix='/admin')
 
@@ -14,6 +16,13 @@ def list_courses():
     settings = AppSettings.query.get(1)
     return render_template('course/list.html', courses=courses, settings=settings)
 
+UPLOAD_FOLDER = '/home/djellal/workspace/ceilgest/app/static/uploads/courses'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @bp.route('/course/create', methods=['GET', 'POST'])
 @login_required
 def create_course():
@@ -25,12 +34,22 @@ def create_course():
     
     if request.method == 'POST':
         try:
+            image_path = None
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+                    file.save(os.path.join(UPLOAD_FOLDER, filename))
+                    image_path = f'courses/{filename}'
+            
             course = Course(
                 code=request.form['code'],
                 name=request.form['name'],
                 name_ar=request.form['name_ar'],
                 duration=int(request.form['duration']),
                 course_type=request.form['course_type'],
+                image=image_path,
                 is_active='is_active' in request.form
             )
             db.session.add(course)
@@ -55,6 +74,21 @@ def edit_course(id):
     
     if request.method == 'POST':
         try:
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and allowed_file(file.filename):
+                    # Delete old image if exists
+                    if course.image:
+                        old_path = os.path.join(UPLOAD_FOLDER, course.image.split('/')[-1])
+                        if os.path.exists(old_path):
+                            os.remove(old_path)
+                    
+                    # Save new image
+                    filename = secure_filename(file.filename)
+                    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+                    file.save(os.path.join(UPLOAD_FOLDER, filename))
+                    course.image = f'courses/{filename}'
+            
             course.code = request.form['code']
             course.name = request.form['name']
             course.name_ar = request.form['name_ar']

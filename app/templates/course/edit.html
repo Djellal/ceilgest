@@ -50,7 +50,10 @@
                             </div>
                         </div>
                     {% else %}
-                        <div class="text-muted">No image uploaded</div>
+                        <div class="text-center py-3 border rounded" style="background-color: #f8f9fa;">
+                            <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
+                            <p class="mt-2 mb-0">No image uploaded</p>
+                        </div>
                     {% endif %}
                     <input type="file" class="form-control mt-2" name="image">
                 </div>
