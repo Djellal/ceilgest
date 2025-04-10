@@ -47,6 +47,7 @@ def edit_state(id):
         return redirect(url_for('main.index'))
     
     state = State.query.get_or_404(id)
+    settings = AppSettings.query.get(1)  # Add this line
     
     if request.method == 'POST':
         try:
@@ -59,7 +60,7 @@ def edit_state(id):
             db.session.rollback()
             flash(f'Error updating state: {str(e)}', 'danger')
     
-    return render_template('state/edit.html', state=state)
+    return render_template('state/edit.html', state=state, settings=settings)  # Pass settings here
 
 @bp.route('/state/<int:id>/delete', methods=['POST'])
 @login_required
