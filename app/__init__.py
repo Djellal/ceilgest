@@ -9,6 +9,8 @@ from app.state import bp as state_bp
 from app.profession import bp as profession_bp
 from app.course import bp as course_bp
 from app.course_level import bp as course_level_bp
+from flask_bootstrap import Bootstrap5
+from flask_debugtoolbar import DebugToolbarExtension
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -16,8 +18,17 @@ migrate = Migrate()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
+    bootstrap = Bootstrap5(app)
     app.config.from_object(config_class)
-
+    
+    # Enable SQL query recording
+    app.config['SQLALCHEMY_RECORD_QUERIES'] = True
+    
+    # Debug toolbar setup
+    app.config['DEBUG_TB_ENABLED'] = True
+    app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
+    toolbar = DebugToolbarExtension(app)
+    
     db.init_app(app)
     login_manager.init_app(app)
     migrate.init_app(app, db)  # Initialize Flask-Migrate
