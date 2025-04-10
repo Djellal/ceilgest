@@ -57,13 +57,14 @@
                         <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
                     </li>
                     {% if current_user.is_admin %}
+                    <!-- In the admin dropdown menu -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             Admin
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('session.list_sessions') }}">Sessions</a></li>
-                            <!-- Add more admin menu items here -->
+                            <li><a class="dropdown-item" href="{{ url_for('app_settings.manage_settings') }}">Settings</a></li>
                         </ul>
                     </li>
                     {% endif %}

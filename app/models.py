@@ -50,3 +50,25 @@ class User(UserMixin, db.Model):
     @property
     def is_student(self):
         return self.role.name == 'Student'
+
+
+class AppSettings(db.Model):
+    __tablename__ = 'app_settings'
+    id = db.Column(db.Integer, primary_key=True)
+    organization_name = db.Column(db.String(100), nullable=False, default='Ceilgest')
+    organization_logo = db.Column(db.String(255))  # Path to image file
+    address = db.Column(db.Text)
+    tel = db.Column(db.String(20))
+    email = db.Column(db.String(100))
+    website = db.Column(db.String(100))
+    facebook = db.Column(db.String(100))
+    twitter = db.Column(db.String(100))
+    linkedin = db.Column(db.String(100))
+    youtube = db.Column(db.String(100))
+    current_session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
+    registration_opened = db.Column(db.Boolean, default=False)
+    
+    current_session = db.relationship('Session', backref='app_settings')
+    
+    def __repr__(self):
+        return f'<AppSettings {self.organization_name}>'
