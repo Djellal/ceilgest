@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_login import LoginManager
 from flask_migrate import Migrate
+# Remove this line: from flask_admin import Admin
 from app.config import Config
 from app.models import db
 from app.session import bp as session_bp
@@ -22,6 +23,10 @@ def create_app(config_class=Config):
     bootstrap = Bootstrap5(app)
     app.config.from_object(config_class)
     ckeditor = CKEditor(app)
+    
+    # Remove this line: admin = Admin(app, name='Ceilgest Admin', template_mode='bootstrap4')
+    
+    
     
     # Enable SQL query recording
     app.config['SQLALCHEMY_RECORD_QUERIES'] = True

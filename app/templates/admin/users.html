@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2><i class="bi bi-people-fill me-2"></i>User Management</h2>
+            <a href="{{ url_for('auth.add_user') }}" class="btn btn-light">
+                <i class="bi bi-plus-circle me-1"></i> Add User
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <select name="role" class="form-select">
+                            <option value="all">All Roles</option>
+                            {% for role in roles %}
+                            <option value="{{ role.id }}" {% if current_role_filter == role.id|string %}selected{% endif %}>
+                                {{ role.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="search" class="form-control" placeholder="Search by username or email" 
+                               value="{{ current_search or '' }}">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary w-100">Filter</button>
+                    </div>
+                    <div class="col-md-2">
+                        <a href="{{ url_for('auth.manage_users') }}" class="btn btn-outline-secondary w-100">
+                            Clear Filters
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th><i class="bi bi-hash"></i> ID</th>
+                        <th><i class="bi bi-person"></i> Username</th>
+                        <th><i class="bi bi-envelope"></i> Email</th>
+                        <th><i class="bi bi-person-badge"></i> Role</th>
+                        <th><i class="bi bi-gear"></i> Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <span class="badge bg-secondary">
+                                <i class="bi bi-{{ 'person-check' if user.role.name == 'Admin' else 'person' }} me-1"></i>
+                                {{ user.role.name }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('auth.edit_user', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a href="#" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

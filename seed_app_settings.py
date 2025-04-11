@@ -1,3 +1,4 @@
+import email
 from app import create_app
 from app.models import db, AppSettings
 
@@ -7,8 +8,10 @@ def seed_app_settings():
         if not AppSettings.query.get(1):
             default_settings = AppSettings(
                 id=1,
-                organization_name='Ceilgest',
-                registration_opened=False
+                organization_name='CeilGest',
+                registration_opened=False,
+               
+                
             )
             db.session.add(default_settings)
             db.session.commit()

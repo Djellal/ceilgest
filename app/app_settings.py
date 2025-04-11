@@ -12,7 +12,7 @@ from flask_ckeditor import CKEditor
 # Initialize CKEditor in your app factory or where you initialize extensions
 # ckeditor = CKEditor(app)
 
-@bp.route('/admin/settings', methods=['GET', 'POST'])
+@bp.route('/config/settings', methods=['GET', 'POST'])
 @login_required
 def manage_settings():
     if not current_user.is_admin:
