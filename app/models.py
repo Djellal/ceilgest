@@ -127,10 +127,10 @@ class CourseLevel(db.Model):
     name_ar = db.Column(db.String(300), nullable=False)
     duration = db.Column(db.Integer, nullable=False)
     course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
-    previous_level_id = db.Column(db.Integer, db.ForeignKey('course_levels.id'))
+    next_level_id = db.Column(db.Integer, db.ForeignKey('course_levels.id'))
     
     course = db.relationship('Course', backref='levels')
-    previous_level = db.relationship('CourseLevel', remote_side=[id])
+    next_level = db.relationship('CourseLevel', remote_side=[id])
     
     def __repr__(self):
         return f'<CourseLevel {self.name}>'

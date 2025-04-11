@@ -22,6 +22,8 @@ def create_session():
         flash('Access denied', 'danger')
         return redirect(url_for('main.index'))
     
+    settings = AppSettings.query.get(1)  # Add this line to get settings
+    
     if request.method == 'POST':
         try:
             session = Session(
@@ -39,7 +41,7 @@ def create_session():
             db.session.rollback()
             flash(f'Error creating session: {str(e)}', 'danger')
     
-    return render_template('session/create.html')
+    return render_template('session/create.html', settings=settings)  # Pass settings here
 
 @bp.route('/session/<int:id>/edit', methods=['GET', 'POST'])
 @login_required

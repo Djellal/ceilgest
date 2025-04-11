@@ -9,9 +9,15 @@ def seed_app_settings():
             default_settings = AppSettings(
                 id=1,
                 organization_name='CeilGest',
-                registration_opened=False,
-               
-                
+                address='123 Main St',
+                tel='123-456-7890',
+                email='ceil@univ-setif.dz',
+                facebook='https://facebook.com/ceilgest',
+                twitter='https://twitter.com/ceilgest',
+                linkedin='https://linkedin.com/ceilgest',
+                youtube='https://youtube.com/ceilgest',
+                website='https://www.ceilgest.com',
+                registration_opened=False
             )
             db.session.add(default_settings)
             db.session.commit()
