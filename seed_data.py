@@ -8,6 +8,7 @@ from app.models import (
     Course,
     CourseLevel,
     Municipality,
+    Profession,  # Add this import
     Role,
     State,
     User,
@@ -306,9 +307,35 @@ def seed_locations():
         db.session.commit()
         print(f"Successfully seeded {len(states_data)} states with their municipalities!")
 
+def seed_professions():
+    app = create_app()
+    with app.app_context():
+        # Check if professions already exist
+        if Profession.query.first():
+            print("Professions already exist in the database. Skipping seed.")
+            return
+            
+        professions = [
+            ("Student", "طالب", 4000),
+            ("Externe", "خارجي", 8000),
+            ("Employee", "موظف", 6000)
+        ]
+        
+        for name, name_ar, fee_value in professions:
+            profession = Profession(
+                name=name,
+                name_ar=name_ar,
+                fee_value=fee_value
+            )
+            db.session.add(profession)
+        
+        db.session.commit()
+        print("Successfully seeded professions!")
+
 if __name__ == '__main__':
     seed_app_settings()
     seed_roles()
     seed_admin()
     seed_courses()
     seed_locations()
+    seed_professions()  # Add this line
