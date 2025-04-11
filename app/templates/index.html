@@ -5,147 +5,165 @@
 {% block content %}
 <div class="row">
     <div class="col-md-12 mx-auto">
-        <div class="card shadow">
-            <div class="card-body">
-                <h2 class="card-title">Welcome to Ceilgest</h2>
-                <p class="card-text">This is the home page of your application.</p>
-
-                <!-- Available Courses Section -->
-                <div class="mt-4 container-fluid"></div>
-                    <h4>Available Courses</h4>
-                    <div class="mb-4">
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-primary active filter-btn" data-filter="all">All</button>
-                            <button type="button" class="btn btn-outline-primary filter-btn" data-filter="Language">Languages</button>
-                            <button type="button" class="btn btn-outline-primary filter-btn" data-filter="Workshop">Workshops</button>
-                        </div>
-                    </div>
-
-                    {% if courses %}
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="courseGrid">
-                        {% for course in courses %}
-                        <div class="col" data-course-type="{{ course.course_type }}">
-                            <div class="card h-100 course-card shadow-sm">
-                                {% if course.image %}
-                                <img src="{{ url_for('static', filename='uploads/' + course.image) }}" 
-                                     class="card-img-top" alt="{{ course.name }}"
-                                     style="height: 180px; object-fit: cover;">
-                                {% else %}
-                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
-                                     style="height: 180px;">
-                                    <i class="bi bi-book fs-1 text-muted"></i>
-                                </div>
-                                {% endif %}
-                                
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ course.name }}</h5>
-                                    <p class="card-text">
-                                        <span class="badge bg-primary">{{ course.course_type }}</span>
-                                        <span class="ms-2">{{ course.duration }} hours</span>
-                                    </p>
-                                </div>
-                                
-                                <div class="card-footer bg-transparent">
-                                    {% if current_user.is_authenticated and current_user.is_student %}
-                                    <a href="{{ url_for('main.register_course') }}" class="btn btn-sm btn-primary w-100">
-                                        Register
-                                    </a>
-                                    {% elif not current_user.is_authenticated %}
-                                    <a href="{{ url_for('auth.register') }}" class="btn btn-sm btn-primary w-100">
-                                        Register to Enroll
-                                    </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    <div class="alert alert-info">No courses currently available</div>
-                    {% endif %}
-                </div>
-
-                <script>
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        // Update active button
-                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        // Filter courses
-                        const filter = this.dataset.filter;
-                        document.querySelectorAll('#courseGrid .col').forEach(card => {
-                            card.style.display = (filter === 'all' || card.dataset.courseType === filter) 
-                                ? 'block' 
-                                : 'none';
-                        });
-                    });
-                });
-                </script>
-
-                <style>
-                .course-card {
-                    transition: all 0.3s ease;
-                    border-radius: 10px;
-                    overflow: hidden;
-                }
-                .course-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-                }
-                .card-img-top {
-                    transition: transform 0.5s ease;
-                }
-                .course-card:hover .card-img-top {
-                    transform: scale(1.05);
-                }
-                </style>
-
-                {% if current_user.is_authenticated and current_user.is_student %}
-                <div class="mt-4">
-                    <a href="{{ url_for('main.student_dashboard') }}" class="btn btn-primary">
-                        Go to Student Dashboard
-                    </a>
+        <!-- Hero Section with Background -->
+        <div class="card shadow mb-4 hero-card">
+            <div class="card-body p-4 p-md-5 text-center">
+                <h1 class="display-4 fw-bold mb-3">Welcome to {{ settings.organization_name }}</h1>
+                <p class="lead mb-4">We offer comprehensive language courses and specialized workshops designed to help you achieve fluency and cultural understanding.</p>
+                {% if not current_user.is_authenticated %}
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 gap-3">Get Started</a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">Sign In</a>
                 </div>
                 {% endif %}
-                {% if current_user.is_authenticated and current_user.is_admin %}
-                <div class="mt-4">
-                    <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-primary">
-                        Go to Admin Dashboard
+            </div>
+        </div>
+
+        <!-- Available Courses Section -->
+        <div class="card shadow">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="card-title mb-0">Available Courses</h2>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary active filter-btn" data-filter="all">All</button>
+                        <button type="button" class="btn btn-outline-primary filter-btn" data-filter="Language">Languages</button>
+                        <button type="button" class="btn btn-outline-primary filter-btn" data-filter="Workshop">Workshops</button>
+                    </div>
+                </div>
+
+                {% if courses %}
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="courseGrid">
+                    {% for course in courses %}
+                    <div class="col" data-course-type="{{ course.course_type }}">
+                        <div class="card h-100 course-card shadow-sm">
+                            {% if course.image %}
+                            <img src="{{ url_for('static', filename='uploads/' + course.image) }}" 
+                                 class="card-img-top" alt="{{ course.name }}"
+                                 style="height: 200px; object-fit: cover;">
+                            {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" 
+                                 style="height: 200px;">
+                                <i class="bi bi-book fs-1 text-muted"></i>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="card-body">
+                                <h5 class="card-title">{{ course.name }}</h5>
+                                <p class="card-text text-muted small">{{ course.name_ar }}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <span class="badge bg-primary">{{ course.course_type }}</span>
+                                    <span class="text-muted"><i class="bi bi-clock me-1"></i>{{ course.duration }} hours</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer bg-transparent">
+                                {% if current_user.is_authenticated and current_user.is_student %}
+                                <a href="{{ url_for('main.register_course') }}" class="btn btn-primary w-100">
+                                    <i class="bi bi-pencil-square me-1"></i>Register
+                                </a>
+                                {% elif not current_user.is_authenticated %}
+                                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-person-plus me-1"></i>Register to Enroll
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>No courses currently available
+                </div>
+                {% endif %}
+
+                {% if current_user.is_authenticated %}
+                <div class="mt-5 text-center">
+                    {% if current_user.is_student %}
+                    <a href="{{ url_for('main.student_dashboard') }}" class="btn btn-lg btn-primary">
+                        <i class="bi bi-speedometer2 me-2"></i>Go to Student Dashboard
                     </a>
+                    {% elif current_user.is_admin %}
+                    <a href="{{ url_for('main.admin_dashboard') }}" class="btn btn-lg btn-primary">
+                        <i class="bi bi-speedometer2 me-2"></i>Go to Admin Dashboard
+                    </a>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+
+<script>
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Update active button
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Filter courses
+        const filter = this.dataset.filter;
+        document.querySelectorAll('#courseGrid .col').forEach(card => {
+            if (filter === 'all' || card.dataset.courseType === filter) {
+                card.style.display = 'block';
+                card.classList.add('fade-in');
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
 
 <style>
-    .hover-zoom {
-        transition: all 0.3s ease;
-    }
-    .hover-zoom:hover {
-        transform: scale(1.05);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    .course-image-container {
-        position: relative;
-        overflow: hidden;
-        border-radius: 8px;
-    }
-    .course-image-container::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.03);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    .course-image-container:hover::after {
-        opacity: 1;
-    }
+.hero-card {
+    background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+                url('{{ url_for("static", filename="img/language-bg.jpg") }}') center/cover;
+    border-radius: 15px;
+}
+
+.course-card {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.card-img-top {
+    transition: transform 0.5s ease;
+}
+
+.course-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.btn {
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
 </style>
+{% endblock %}
