@@ -12,13 +12,13 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">First Name (English)</label>
+                            <label class="form-label"><i class="bi bi-person me-2"></i>First Name (English)</label>
                             <input type="text" class="form-control" name="first_name" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Last Name (English)</label>
+                            <label class="form-label"><i class="bi bi-person me-2"></i>Last Name (English)</label>
                             <input type="text" class="form-control" name="last_name" required>
                         </div>
                     </div>
@@ -26,13 +26,13 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">First Name (Arabic)</label>
+                            <label class="form-label"><i class="bi bi-person me-2"></i>First Name (Arabic)</label>
                             <input type="text" class="form-control" name="first_name_ar" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Last Name (Arabic)</label>
+                            <label class="form-label"><i class="bi bi-person me-2"></i>Last Name (Arabic)</label>
                             <input type="text" class="form-control" name="last_name_ar" required>
                         </div>
                     </div>
@@ -40,25 +40,25 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Birth Date</label>
+                            <label class="form-label"><i class="bi bi-calendar me-2"></i>Birth Date</label>
                             <input type="date" class="form-control" name="birth_date" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Phone Number</label>
+                            <label class="form-label"><i class="bi bi-telephone me-2"></i>Phone Number</label>
                             <input type="tel" class="form-control" name="tel" required>
                         </div>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Address</label>
+                    <label class="form-label"><i class="bi bi-house me-2"></i>Address</label>
                     <textarea class="form-control" name="address" required></textarea>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Birth State</label>
+                            <label class="form-label"><i class="bi bi-geo-alt me-2"></i>Birth State</label>
                             <select class="form-select" name="birth_state" required>
                                 {% for state in states %}
                                 <option value="{{ state.id }}">{{ state.name }}</option>
@@ -68,7 +68,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Birth Municipality</label>
+                            <label class="form-label"><i class="bi bi-geo me-2"></i>Birth Municipality</label>
                             <select class="form-select" name="birth_municipality" required>
                                 {% for state in states %}
                                 {% for municipality in state.municipalities %}
@@ -80,7 +80,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Profession</label>
+                    <label class="form-label"><i class="bi bi-briefcase me-2"></i>Profession</label>
                     <select class="form-select" name="profession" required>
                         {% for profession in professions %}
                         <option value="{{ profession.id }}" data-fee="{{ profession.fee_value }}">
@@ -90,11 +90,11 @@
                     </select>
                 </div>
 
-                <h4 class="mt-4 mb-3">Course Information</h4>
+                <h4 class="mt-4 mb-3"><i class="bi bi-book me-2"></i>Course Information</h4>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Course</label>
+                            <label class="form-label"><i class="bi bi-book me-2"></i>Course</label>
                             <select class="form-select" name="course" id="course-select" required>
                                 {% for course in courses %}
                                 <option value="{{ course.id }}">{{ course.name }}</option>
@@ -104,7 +104,7 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">Course Level</label>
+                            <label class="form-label"><i class="bi bi-bookmark me-2"></i>Course Level</label>
                             <select class="form-select" name="course_level" id="level-select" required>
                                 {% for level in levels %}
                                 <option value="{{ level.id }}" data-course="{{ level.course_id }}">
@@ -116,17 +116,17 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Fee Value</label>
+                    <label class="form-label"><i class="bi bi-cash-coin me-2"></i>Fee Value</label>
                     <input type="number" step="0.01" class="form-control" name="fee_value" id="fee-input" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Additional Notes</label>
+                    <label class="form-label"><i class="bi bi-pencil me-2"></i>Additional Notes</label>
                     <textarea class="form-control" name="notes"></textarea>
                 </div>
                 
                 <div class="card mb-3">
                     <div class="card-header bg-light">
-                        <h5>Terms and Conditions</h5>
+                        <h5><i class="bi bi-file-text me-2"></i>Terms and Conditions</h5>
                     </div>
                     <div class="card-body">
                         <div class="terms-content" style="max-height: 200px; overflow-y: auto;">
@@ -138,10 +138,10 @@
                 <div class="form-check mb-4">
                     <input class="form-check-input" type="checkbox" name="terms_accepted" id="terms" required>
                     <label class="form-check-label" for="terms">
-                        I accept the registration terms and conditions
+                        <i class="bi bi-check-circle me-2"></i>I accept the registration terms and conditions
                     </label>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit Registration</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Submit Registration</button>
             </form>
         </div>
     </div>

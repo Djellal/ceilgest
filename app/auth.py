@@ -54,8 +54,13 @@ def register():
             flash('Email already exists')
             return redirect(url_for('auth.register'))
             
-        # Default role is Student (role_id=3)
-        new_user = User(username=username, email=email, role_id=3)
+        # Get Student role by name instead of using hardcoded ID
+        student_role = Role.query.filter_by(name='Student').first()
+        if not student_role:
+            flash('Error: Student role not found in the system')
+            return redirect(url_for('auth.register'))
+            
+        new_user = User(username=username, email=email, role_id=student_role.id)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
