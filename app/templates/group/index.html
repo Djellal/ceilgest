@@ -7,6 +7,39 @@
             <h2>Groups Management</h2>
         </div>
         <div class="card-body">
+            <form method="GET" class="mb-4">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label">Filter by Course</label>
+                        <select class="form-select" name="course_id">
+                            <option value="">All Courses</option>
+                            {% for course in courses %}
+                            <option value="{{ course.id }}" {% if request.args.get('course_id')|int == course.id %}selected{% endif %}>
+                                {{ course.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Filter by Level</label>
+                        <select class="form-select" name="level_id" id="level-select">
+                            <option value="">All Levels</option>
+                            {% for level in levels %}
+                            <option value="{{ level.id }}" 
+                                    data-course="{{ level.course_id }}"
+                                    {% if request.args.get('level_id')|int == level.id %}selected{% endif %}>
+                                {{ level.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100 me-2">Filter</button>
+                        <a href="{{ url_for('group.index') }}" class="btn btn-outline-secondary w-100">Clear</a>
+                    </div>
+                </div>
+            </form>
+
             <a href="{{ url_for('group.create') }}" class="btn btn-success mb-3">
                 <i class="bi bi-plus-circle"></i> Create New Group
             </a>
@@ -51,4 +84,27 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const courseSelect = document.querySelector('select[name="course_id"]');
+    const levelSelect = document.getElementById('level-select');
+    
+    courseSelect.addEventListener('change', function() {
+        const courseId = this.value;
+        Array.from(levelSelect.options).forEach(option => {
+            if (option.value === "") return; // Keep "All Levels" option
+            option.style.display = option.dataset.course === courseId ? '' : 'none';
+        });
+        levelSelect.value = "";
+    });
+    
+    // Initialize based on current course selection
+    if (courseSelect.value) {
+        courseSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
 {% endblock %}

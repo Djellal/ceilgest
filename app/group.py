@@ -15,9 +15,29 @@ def index():
         flash('Access denied', 'danger')
         return redirect(url_for('main.index'))
     
-    groups = Group.query.all()
-    settings = AppSettings.query.get(1)  # Get app settings
-    return render_template('group/index.html', groups=groups, settings=settings)
+    settings = AppSettings.query.get(1)
+    # Start with base query filtered by current session
+    query = Group.query.filter_by(session_id=settings.current_session_id)
+    
+    # Get filter parameters from URL
+    course_id = request.args.get('course_id', type=int)
+    level_id = request.args.get('level_id', type=int)
+    
+    # Apply additional filters if provided
+    if course_id:
+        query = query.filter_by(course_id=course_id)
+    if level_id:
+        query = query.filter_by(course_level_id=level_id)
+    
+    groups = query.all()
+    courses = Course.query.all()
+    levels = CourseLevel.query.all()
+    
+    return render_template('group/index.html', 
+                         groups=groups, 
+                         settings=settings,
+                         courses=courses,
+                         levels=levels)
 
 @bp.route('/create', methods=['GET', 'POST'])
 @login_required
