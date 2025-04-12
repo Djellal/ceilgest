@@ -98,12 +98,13 @@ def student_dashboard():
     settings = AppSettings.query.get(1)
     current_session = Session.query.get(settings.current_session_id)
     
-    # Get all registrations for this student
+    # Add this line to get active courses
+    courses = Course.query.filter_by(is_active=True).all()
+    
     registrations = Course_Registration.query.filter_by(
         user_id=current_user.id
     ).order_by(Course_Registration.registration_date.desc()).all()
     
-    # Separate active and past registrations
     active_registrations = [r for r in registrations if r.session_id == current_session.id]
     past_registrations = [r for r in registrations if r.session_id != current_session.id]
 
@@ -112,7 +113,8 @@ def student_dashboard():
         settings=settings,
         active_registrations=active_registrations,
         past_registrations=past_registrations,
-        current_session=current_session
+        current_session=current_session,
+        courses=courses  # Add this parameter
     )
 
 
