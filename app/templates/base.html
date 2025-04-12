@@ -70,6 +70,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('profession.list_professions') }}"><i class="bi bi-briefcase me-1"></i> Professions</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('course.list_courses') }}"><i class="bi bi-book me-1"></i> Courses</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('group.index') }}">Manage Groups</a></li>
                         </ul>
                     </li>
                     {% endif %}
@@ -201,3 +202,24 @@
     {% endblock %}
 </body>
 </html>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Admin
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="adminMenu">
+                    <li><a class="dropdown-item" href="{{ url_for('session.list_sessions') }}">Manage Sessions</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('app_settings.manage_settings') }}">Manage Settings</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('auth.manage_users') }}">Manage Users</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('state.list_states') }}">Manage States</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('profession.list_professions') }}">Manage Professions</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('course.list_courses') }}">Manage Courses</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('group.index') }}">Manage Groups</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>

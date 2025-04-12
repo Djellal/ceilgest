@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from app.models import db, Group, Course, CourseLevel, User, Session, AppSettings  # Add AppSettings to imports
 from flask_login import LoginManager
+from flask import jsonify
+from app.models import CourseLevel
 
 # Remove the import from app and get login_manager from current_app instead
 bp = Blueprint('group', __name__, url_prefix='/groups')
@@ -27,14 +29,18 @@ def create():
     settings = AppSettings.query.get(1)
     
     if request.method == 'POST':
+        # Convert empty string to None for nullable fields
+        course_level_id = request.form.get('course_level_id')
+        course_level_id = int(course_level_id) if course_level_id else None
+        
         group = Group(
             group_name=request.form['group_name'],
             group_name_ar=request.form['group_name_ar'],
-            course_id=request.form['course_id'],
-            course_level_id=request.form.get('course_level_id'),
-            teacher_id=request.form['teacher_id'],
-            session_id=request.form.get('session_id', settings.current_session_id),  # Use current session as default
-            max_students=request.form['max_students']
+            course_id=int(request.form['course_id']),
+            course_level_id=course_level_id,
+            teacher_id=int(request.form['teacher_id']),
+            session_id=int(request.form.get('session_id', settings.current_session_id)),
+            max_students=int(request.form['max_students'])
         )
         db.session.add(group)
         db.session.commit()
@@ -99,3 +105,13 @@ def delete(id):
     db.session.commit()
     flash('Group deleted successfully', 'success')
     return redirect(url_for('group.index'))
+
+
+@bp.route('/api/courses/<int:course_id>/levels')
+def get_course_levels(course_id):
+    levels = CourseLevel.query.filter_by(course_id=course_id).all()
+    return jsonify([{
+        'id': level.id,
+        'name': level.name,
+        'name_ar': level.name_ar
+    } for level in levels])
