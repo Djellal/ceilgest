@@ -13,6 +13,7 @@ from app.course_level import bp as course_level_bp
 from flask_bootstrap import Bootstrap5
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_ckeditor import CKEditor
+from app.group import bp as group_bp
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -23,6 +24,9 @@ def create_app(config_class=Config):
     bootstrap = Bootstrap5(app)
     app.config.from_object(config_class)
     ckeditor = CKEditor(app)
+    
+    # Print the database URI to verify the connection string
+    print("Database URI:", app.config['SQLALCHEMY_DATABASE_URI'])
     
     # Remove this line: admin = Admin(app, name='Ceilgest Admin', template_mode='bootstrap4')
     
@@ -51,5 +55,6 @@ def create_app(config_class=Config):
     app.register_blueprint(profession_bp)
     app.register_blueprint(course_bp)
     app.register_blueprint(course_level_bp)
-
+    app.register_blueprint(group_bp)
+    
     return app

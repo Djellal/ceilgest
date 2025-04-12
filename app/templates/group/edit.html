@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2>Edit Group</h2>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Group Name (English)</label>
+                    <input type="text" class="form-control" name="group_name" value="{{ group.group_name }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Group Name (Arabic)</label>
+                    <input type="text" class="form-control" name="group_name_ar" value="{{ group.group_name_ar }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Course</label>
+                    <select class="form-select" name="course_id" id="course-select" required>
+                        {% for course in courses %}
+                        <option value="{{ course.id }}" {% if course.id == group.course_id %}selected{% endif %}>
+                            {{ course.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Course Level (Optional)</label>
+                    <select class="form-select" name="course_level_id" id="level-select">
+                        <option value="">Select Level</option>
+                        {% for level in levels %}
+                        <option value="{{ level.id }}" {% if group.course_level_id == level.id %}selected{% endif %}>
+                            {{ level.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Teacher</label>
+                    <select class="form-select" name="teacher_id" required>
+                        {% for teacher in teachers %}
+                        <option value="{{ teacher.id }}" {% if teacher.id == group.teacher_id %}selected{% endif %}>
+                            {{ teacher.username }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Session</label>
+                    <select class="form-select" name="session_id" required>
+                        {% for session in sessions %}
+                        <option value="{{ session.id }}" {% if session.id == group.session_id %}selected{% endif %}>
+                            {{ session.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Max Students</label>
+                    <input type="number" class="form-control" name="max_students" value="{{ group.max_students }}" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Update Group</button>
+                <a href="{{ url_for('group.index') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('course-select').addEventListener('change', function() {
+    const courseId = this.value;
+    const levelSelect = document.getElementById('level-select');
+    
+    fetch(`/api/courses/${courseId}/levels`)
+        .then(response => response.json())
+        .then(levels => {
+            levelSelect.innerHTML = '<option value="">Select Level</option>';
+            levels.forEach(level => {
+                const option = document.createElement('option');
+                option.value = level.id;
+                option.textContent = level.name;
+                levelSelect.appendChild(option);
+            });
+        });
+});
+</script>
+{% endblock %}

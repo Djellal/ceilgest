@@ -30,7 +30,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128))
+    password_hash = db.Column(db.String(256))  # Increase length to 256
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False, default=1)  # Default to Student
 
     def set_password(self, password):
@@ -158,6 +158,7 @@ class Course_Registration(db.Model):
     registration_terms_accepted = db.Column(db.Boolean, nullable=False, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'), nullable=False)
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), nullable=True)  # Changed to nullable
 
     birth_state = db.relationship('State')
     birth_municipality = db.relationship('Municipality')
@@ -174,3 +175,29 @@ class Course_Registration(db.Model):
     def generate_inscription_code():
         from datetime import datetime
         return f"REG-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+
+
+class Group(db.Model):
+    __tablename__ = 'groups'
+    id = db.Column(db.Integer, primary_key=True)
+    group_name = db.Column(db.String(100), nullable=False)
+    group_name_ar = db.Column(db.String(100), nullable=False)
+    course_id = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=False)
+    course_level_id = db.Column(db.Integer, db.ForeignKey('course_levels.id'), nullable=True)  # Changed to nullable
+    teacher_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'), nullable=False)
+    max_students = db.Column(db.Integer, default=30)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), 
+    onupdate=db.func.current_timestamp())
+
+    # Relationships
+    course = db.relationship('Course')
+    course_level = db.relationship('CourseLevel')
+    teacher = db.relationship('User')
+    session = db.relationship('Session')
+    students = db.relationship('Course_Registration', backref='group', lazy=True)
+
+    def __repr__(self):
+        return f'<Group {self.group_name} - {self.course.name}>'
