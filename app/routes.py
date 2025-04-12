@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
-from app.models import db, Course_Registration, Session, Course, CourseLevel, State, Municipality, Profession
+from app.models import db, Course_Registration, Session, Course, CourseLevel, State, Municipality, Profession, Group
 from datetime import datetime
 from app.models import AppSettings
 
@@ -133,3 +133,50 @@ def admin_dashboard():
 def about():
     settings = AppSettings.query.get(1)  # Get settings from database
     return render_template('about.html', settings=settings)
+
+
+@bp.route('/admin/registrations')
+@login_required
+def admin_registrations():
+    if not current_user.is_admin:
+        flash('Access denied', 'danger')
+        return redirect(url_for('main.index'))
+    
+    # Get filter parameters
+    session_id = request.args.get('session_id', type=int)
+    course_id = request.args.get('course_id', type=int)
+    level_id = request.args.get('level_id', type=int)
+    group_id = request.args.get('group_id', type=int)
+    
+    # Start with base query
+    query = Course_Registration.query
+    
+    # Apply filters
+    if session_id:
+        query = query.filter_by(session_id=session_id)
+    else:
+        # Default to current session if no filter
+        settings = AppSettings.query.get(1)
+        query = query.filter_by(session_id=settings.current_session_id)
+        
+    if course_id:
+        query = query.filter_by(course_id=course_id)
+    if level_id:
+        query = query.filter_by(course_level_id=level_id)
+    if group_id:
+        query = query.filter_by(group_id=group_id)
+    
+    registrations = query.order_by(Course_Registration.registration_date.desc()).all()
+    settings = AppSettings.query.get(1)
+    sessions = Session.query.all()
+    courses = Course.query.all()
+    levels = CourseLevel.query.all()
+    groups = Group.query.all()
+    
+    return render_template('admin/registrations.html', 
+                         registrations=registrations,
+                         settings=settings,
+                         sessions=sessions,
+                         courses=courses,
+                         levels=levels,
+                         groups=groups)
