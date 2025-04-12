@@ -1,19 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
- <!-- Available Courses Section -->
- <div class="mt-4">
-    {% if courses %}
-        {% with section_title='Available Courses', show_filters=false, show_register_button=true %}
-            {% include 'partials/courses_section.html' %}
-        {% endwith %}
-    {% else %}
-        <div class="alert alert-info">
-            No courses are currently available for registration.
-        </div>
-    {% endif %}
-</div>
-
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
@@ -90,6 +77,7 @@
         </div>
     </div>
 
-   
+    <!-- Available Courses Section -->
+    {% include 'partials/courses_section.html' %}
 </div>
 {% endblock %}
