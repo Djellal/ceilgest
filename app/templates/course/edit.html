@@ -7,6 +7,17 @@
             <h2 class="mb-0">Edit Course</h2>
         </div>
         <div class="card-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             <form method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Code</label>
@@ -49,6 +60,7 @@
                                    class="btn btn-sm btn-outline-primary">View Full Image</a>
                             </div>
                         </div>
+                        
                     {% else %}
                         <div class="text-center py-3 border rounded" style="background-color: #f8f9fa;">
                             <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
@@ -56,6 +68,7 @@
                         </div>
                     {% endif %}
                     <input type="file" class="form-control mt-2" name="image">
+                    <small class="text-muted">Maximum file size: {{ config.MAX_CONTENT_LENGTH // (1024 * 1024) }}MB. Allowed formats: PNG, JPG, JPEG, GIF</small>
                 </div>
                 
                 <div class="mb-3 form-check">

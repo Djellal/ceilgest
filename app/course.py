@@ -3,6 +3,8 @@ from flask_login import login_required, current_user
 from app.models import db, Course, AppSettings
 from werkzeug.utils import secure_filename
 import os
+from flask import current_app
+from werkzeug.exceptions import RequestEntityTooLarge
 
 bp = Blueprint('course', __name__, url_prefix='/admin')
 
@@ -37,11 +39,19 @@ def create_course():
             image_path = None
             if 'image' in request.files:
                 file = request.files['image']
-                if file and allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-                    file.save(os.path.join(UPLOAD_FOLDER, filename))
-                    image_path = f'courses/{filename}'
+                if file and file.filename != '':
+                    if file.content_length > current_app.config['MAX_CONTENT_LENGTH']:
+                        flash('Image size exceeds maximum allowed limit', 'danger')
+                        return render_template('course/create.html', settings=settings)
+                    
+                    if allowed_file(file.filename):
+                        filename = secure_filename(file.filename)
+                        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+                        file.save(os.path.join(UPLOAD_FOLDER, filename))
+                        image_path = f'courses/{filename}'
+                    else:
+                        flash('Invalid file type. Allowed types are: png, jpg, jpeg, gif', 'danger')
+                        return render_template('course/create.html', settings=settings)
             
             course = Course(
                 code=request.form['code'],
@@ -56,6 +66,9 @@ def create_course():
             db.session.commit()
             flash('Course created successfully', 'success')
             return redirect(url_for('course.list_courses'))
+        except RequestEntityTooLarge:
+            flash('File size exceeds maximum allowed limit', 'danger')
+            return render_template('course/create.html', settings=settings)
         except Exception as e:
             db.session.rollback()
             flash(f'Error creating course: {str(e)}', 'danger')
@@ -76,18 +89,23 @@ def edit_course(id):
         try:
             if 'image' in request.files:
                 file = request.files['image']
-                if file and allowed_file(file.filename):
-                    # Delete old image if exists
-                    if course.image:
-                        old_path = os.path.join(UPLOAD_FOLDER, course.image.split('/')[-1])
-                        if os.path.exists(old_path):
-                            os.remove(old_path)
+                if file and file.filename != '':
+                    if file.content_length > current_app.config['MAX_CONTENT_LENGTH']:
+                        flash('Image size exceeds maximum allowed limit', 'danger')
+                        return render_template('course/edit.html', course=course, settings=settings)
                     
-                    # Save new image
-                    filename = secure_filename(file.filename)
-                    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-                    file.save(os.path.join(UPLOAD_FOLDER, filename))
-                    course.image = f'courses/{filename}'
+                    if allowed_file(file.filename):
+                        # Delete old image if exists
+                        if course.image:
+                            old_path = os.path.join(UPLOAD_FOLDER, course.image.split('/')[-1])
+                            if os.path.exists(old_path):
+                                os.remove(old_path)
+                        
+                        # Save new image
+                        filename = secure_filename(file.filename)
+                        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+                        file.save(os.path.join(UPLOAD_FOLDER, filename))
+                        course.image = f'courses/{filename}'
             
             course.code = request.form['code']
             course.name = request.form['name']
@@ -98,6 +116,9 @@ def edit_course(id):
             db.session.commit()
             flash('Course updated successfully', 'success')
             return redirect(url_for('course.list_courses'))
+        except RequestEntityTooLarge:
+            flash('File size exceeds maximum allowed limit', 'danger')
+            return render_template('course/edit.html', course=course, settings=settings)
         except Exception as e:
             db.session.rollback()
             flash(f'Error updating course: {str(e)}', 'danger')
