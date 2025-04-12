@@ -65,7 +65,7 @@ class AppSettings(db.Model):
     twitter = db.Column(db.String(100))
     linkedin = db.Column(db.String(100))
     youtube = db.Column(db.String(100))
-    current_session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'))
+    current_session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'), nullable=True)  # Changed to nullable
     registration_opened = db.Column(db.Boolean, default=False)
     terms_and_conditions = db.Column(db.Text)  # New field for terms and conditions
     

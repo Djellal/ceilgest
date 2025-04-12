@@ -47,19 +47,19 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label"><i class="bi bi-telephone me-2"></i>Phone Number</label>
-                            <input type="tel" class="form-control" name="tel" required>
+                            <input type="tel" class="form-control" name="tel"> <!-- Removed required attribute -->
                         </div>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label"><i class="bi bi-house me-2"></i>Address</label>
-                    <textarea class="form-control" name="address" required></textarea>
+                    <textarea class="form-control" name="address"></textarea> <!-- Removed required attribute -->
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label"><i class="bi bi-geo-alt me-2"></i>Birth State</label>
-                            <select class="form-select" name="birth_state" required>
+                            <select class="form-select" name="birth_state" id="state-select" required>
                                 {% for state in states %}
                                 <option value="{{ state.id }}">{{ state.name }}</option>
                                 {% endfor %}
@@ -69,10 +69,12 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label"><i class="bi bi-geo me-2"></i>Birth Municipality</label>
-                            <select class="form-select" name="birth_municipality" required>
+                            <select class="form-select" name="birth_municipality" id="municipality-select" required>
                                 {% for state in states %}
                                 {% for municipality in state.municipalities %}
-                                <option value="{{ municipality.id }}">{{ municipality.name }}</option>
+                                <option value="{{ municipality.id }}" data-state="{{ state.id }}">
+                                    {{ municipality.name }}
+                                </option>
                                 {% endfor %}
                                 {% endfor %}
                             </select>
@@ -119,10 +121,12 @@
                     <label class="form-label"><i class="bi bi-cash-coin me-2"></i>Fee Value</label>
                     <input type="number" step="0.01" class="form-control" name="fee_value" id="fee-input" required>
                 </div>
+                {% if current_user.is_admin %}
                 <div class="mb-3">
                     <label class="form-label"><i class="bi bi-pencil me-2"></i>Additional Notes</label>
                     <textarea class="form-control" name="notes"></textarea>
                 </div>
+                {% endif %}
                 
                 <div class="card mb-3">
                     <div class="card-header bg-light">
@@ -149,6 +153,22 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // State and municipality handling
+    const stateSelect = document.getElementById('state-select');
+    const municipalitySelect = document.getElementById('municipality-select');
+    
+    stateSelect.addEventListener('change', function() {
+        const stateId = this.value;
+        Array.from(municipalitySelect.options).forEach(option => {
+            option.style.display = option.dataset.state === stateId ? '' : 'none';
+        });
+        municipalitySelect.value = Array.from(municipalitySelect.options)
+            .find(opt => opt.style.display !== 'none')?.value || '';
+    });
+
+    // Initialize with current state's municipalities
+    stateSelect.dispatchEvent(new Event('change'));
+
     // Update levels when course changes
     const courseSelect = document.getElementById('course-select');
     const levelSelect = document.getElementById('level-select');

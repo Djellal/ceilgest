@@ -21,16 +21,42 @@ def seed_app_settings():
         if not AppSettings.query.get(1):
             default_settings = AppSettings(
                 id=1,
-                organization_name='CeilGest',
-                address='123 Main St',
-                tel='123-456-7890',
+                organization_name='Ceil UFAS1',
+                address='Université Sétif -1- Campus El Bez, Ex-Faculté de Droit (Actuellement Département d\'Agronomie)',
+                tel='(+213) 036.62.09.96',
                 email='ceil@univ-setif.dz',
-                facebook='https://facebook.com/ceilgest',
-                twitter='https://twitter.com/ceilgest',
-                linkedin='https://linkedin.com/ceilgest',
-                youtube='https://youtube.com/ceilgest',
-                website='https://www.ceilgest.com',
-                registration_opened=False
+                facebook='https://www.facebook.com/CEIL.SETIF1UNIVERSITY',
+                twitter='https://twitter.com/UnivFerhatAbbas',
+                linkedin='https://www.linkedin.com/school/universite-ferhat-abbas-setif/',
+                youtube='https://www.youtube.com/channel/UCjU0ehPWCFlvCHrfgUt3DOQ',
+                website='https://ceil.univ-setif.dz',
+                registration_opened=False,
+                terms_and_conditions='''
+                    <h1>Terms and Conditions</h1>
+                    
+                    <h2>1. Acceptance of Terms</h2>
+                    <p>By enrolling in any course at CeilGest, you agree to be bound by these terms and conditions.</p>
+                    
+                    <h2>2. Registration and Payment</h2>
+                    <p>2.1. All course fees must be paid in full before the start of classes.</p>
+                    <p>2.2. Registration is only confirmed upon receipt of full payment.</p>
+                    
+                    <h2>3. Attendance and Participation</h2>
+                    <p>3.1. Regular attendance is mandatory for all enrolled students.</p>
+                    <p>3.2. Students must maintain at least 80% attendance to be eligible for course completion certificates.</p>
+                    
+                    <h2>4. Course Materials</h2>
+                    <p>4.1. All course materials provided are the intellectual property of CeilGest.</p>
+                    <p>4.2. Reproduction or distribution of course materials is strictly prohibited.</p>
+                    
+                    <h2>5. Code of Conduct</h2>
+                    <p>5.1. Students must maintain professional behavior during all class sessions.</p>
+                    <p>5.2. Any form of harassment or discrimination will not be tolerated.</p>
+                    
+                    <h2>6. Refund Policy</h2>
+                    <p>6.1. No refunds will be issued after the course has commenced.</p>
+                    <p>6.2. Cancellations made 7 days before course start date are eligible for full refund.</p>
+                ''',
             )
             db.session.add(default_settings)
             db.session.commit()
