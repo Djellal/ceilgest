@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Form - {{ registration.inscription_code }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .section { margin-bottom: 15px; }
+        .section-title { 
+            background-color: #f0f0f0; 
+            padding: 5px; 
+            font-weight: bold;
+            border-left: 4px solid #3498db;
+        }
+        .row { display: flex; margin-bottom: 5px; }
+        .label { width: 30%; font-weight: bold; }
+        .value { width: 70%; }
+        .footer { margin-top: 30px; text-align: center; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Registration Form</h2>
+        <h3>{{ registration.inscription_code }}</h3>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Personal Information</div>
+        <div class="row">
+            <div class="label">Full Name:</div>
+            <div class="value">{{ registration.first_name }} {{ registration.last_name }}</div>
+        </div>
+        <!-- Add all other personal info fields similarly -->
+    </div>
+
+    <div class="section">
+        <div class="section-title">Course Information</div>
+        <div class="row">
+            <div class="label">Course:</div>
+            <div class="value">{{ registration.course.name }}</div>
+        </div>
+        <!-- Add all other course info fields similarly -->
+    </div>
+
+    <div class="footer">
+        <p>Generated on {{ now.strftime('%Y-%m-%d') }}</p>
+    </div>
+</body>
+</html>

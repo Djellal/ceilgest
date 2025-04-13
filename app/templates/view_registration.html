@@ -167,7 +167,7 @@
                        class="btn btn-primary">
                         <i class="bi bi-pencil me-2"></i>Edit Registration
                     </a>
-                    <button class="btn btn-outline-primary">
+                    <button class="btn btn-outline-primary" onclick="window.location.href='{{ url_for('main.generate_registration_pdf', registration_id=registration.id) }}'">
                         <i class="bi bi-printer me-2"></i>Print
                     </button>
                 </div>

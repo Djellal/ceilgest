@@ -3,6 +3,8 @@ from flask_login import login_required, current_user
 from app.models import db, Course_Registration, Session, Course, CourseLevel, State, Municipality, Profession, Group
 from datetime import datetime
 from app.models import AppSettings
+import pdfkit
+from flask import make_response
 
 bp = Blueprint('main', __name__)
 
@@ -324,4 +326,43 @@ def view_registration(registration_id):
     return render_template('view_registration.html',
                          registration=registration,
                          settings=settings)
+
+
+@bp.route('/registration/<int:registration_id>/pdf')
+@login_required
+def generate_registration_pdf(registration_id):
+    registration = Course_Registration.query.get_or_404(registration_id)
+    
+    # Check permissions
+    if not (current_user.is_admin or current_user.id == registration.user_id):
+        flash('Access denied', 'danger')
+        return redirect(url_for('main.index'))
+    
+    # Render HTML template with current datetime
+    from datetime import datetime
+    html = render_template(
+        'pdf/registration.html', 
+        registration=registration,
+        now=datetime.now()  # Add this line
+    )
+    
+    # PDF options
+    options = {
+        'page-size': 'A4',
+        'margin-top': '0.25in',
+        'margin-right': '0.25in',
+        'margin-bottom': '0.25in',
+        'margin-left': '0.25in',
+        'encoding': "UTF-8",
+    }
+    
+    # Generate PDF
+    pdf = pdfkit.from_string(html, False, options=options)
+    
+    # Create response
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'inline; filename=registration_{registration.inscription_code}.pdf'
+    
+    return response
 
