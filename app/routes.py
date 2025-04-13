@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from app.models import db, Course_Registration, Session, Course, CourseLevel, State, Municipality, Profession, Group
 from datetime import datetime
@@ -182,3 +182,61 @@ def admin_registrations():
                          courses=courses,
                          levels=levels,
                          groups=groups)
+
+
+@bp.route('/edit-registration/<int:registration_id>', methods=['GET', 'POST'])
+@login_required
+def edit_registration(registration_id):
+    registration = Course_Registration.query.get_or_404(registration_id)
+    settings = AppSettings.query.get(1)
+    
+    # Check permissions
+    if not (current_user.is_admin or 
+            (current_user.is_student and 
+             current_user.id == registration.user_id and 
+             registration.session_id == settings.current_session_id and
+             not registration.group_id)):
+        flash('You cannot edit this registration', 'danger')
+        return redirect(url_for('main.student_dashboard'))
+
+    if request.method == 'POST':
+        try:
+            # Update editable fields
+            registration.address = request.form['address']
+            registration.tel = request.form['tel']
+            registration.notes = request.form.get('notes', '')
+            
+            # Only update validation if admin
+            if current_user.is_admin:
+                registration.registration_validated = 'registration_validated' in request.form
+            
+            db.session.commit()
+            flash('Registration updated successfully', 'success')
+            return redirect(url_for('main.student_dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating registration: {str(e)}', 'danger')
+
+    # Get dropdown options
+    states = State.query.all()
+    professions = Profession.query.all()
+    courses = Course.query.filter_by(is_active=True).all()
+    levels = CourseLevel.query.all()
+    
+    return render_template(
+        'edit_registration.html',
+        settings=settings,
+        registration=registration,
+        states=states,
+        professions=professions,
+        courses=courses,
+        levels=levels
+    )
+
+
+@bp.route('/api/municipalities')
+def get_municipalities():
+    state_id = request.args.get('state_id')
+    municipalities = Municipality.query.filter_by(state_id=state_id).all()
+    return jsonify([{'id': m.id, 'name': m.name} for m in municipalities])
+

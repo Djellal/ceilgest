@@ -93,6 +93,10 @@
                                 <a href="#" class="btn btn-sm btn-primary" title="View">
                                     <i class="bi bi-eye"></i>
                                 </a>
+                                <a href="{{ url_for('main.edit_registration', registration_id=reg.id) }}" 
+                                   class="btn btn-sm btn-warning" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
                             </td>
                         </tr>
                         {% endfor %}

@@ -159,6 +159,7 @@ class Course_Registration(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     session_id = db.Column(db.Integer, db.ForeignKey('sessions.id'), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), nullable=True)  # Changed to nullable
+    registration_validated = db.Column(db.Boolean, default=False, nullable=False)  # New field
 
     birth_state = db.relationship('State')
     birth_municipality = db.relationship('Municipality')

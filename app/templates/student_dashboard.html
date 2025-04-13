@@ -31,6 +31,12 @@
                             <td>
                                 <span class="badge bg-success">Active</span>
                             </td>
+                            <td>
+                                {% if reg.group_id is none %}
+                                <a href="{{ url_for('main.edit_registration', registration_id=reg.id) }}" 
+                                   class="btn btn-sm btn-warning">Edit</a>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
