@@ -1,50 +1,287 @@
+-- Active: 1744459090615@@127.0.0.1@5432@ceilgest
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Registration Form - {{ registration.inscription_code }}</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .section { margin-bottom: 15px; }
-        .section-title { 
-            background-color: #f0f0f0; 
-            padding: 5px; 
-            font-weight: bold;
-            border-left: 4px solid #3498db;
+        body { 
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            line-height: 1.5;
+            color: #2c3e50;
+            font-size: 12px;
+            margin: 0;
+            padding: 15px;
+            background-color: #f9f9f9;
         }
-        .row { display: flex; margin-bottom: 5px; }
-        .label { width: 30%; font-weight: bold; }
-        .value { width: 70%; }
-        .footer { margin-top: 30px; text-align: center; font-size: 0.8em; }
+        .document {
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo {
+            position: absolute;
+            left: 0;
+            top: 0;
+            max-height: 60px;
+            max-width: 120px;
+        }
+        .header h2 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+        .header h3 {
+            color: #7f8c8d;
+            font-weight: normal;
+            font-size: 14px;
+            background: #ecf0f1;
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 15px;
+        }
+        .columns-container {
+            column-count: 2;
+            column-gap: 25px;
+            margin-bottom: 20px;
+        }
+        .section { 
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+            display: inline-block;
+            width: 100%;
+            background: #f8f9fa;
+            border-radius: 5px;
+            padding: 2px 8px 8px 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            background-color: #3498db;
+            color: white;
+            padding: 7px 10px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+        .section-title:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #2980b9;
+            border-radius: 4px 0 0 4px;
+        }
+        .info-item {
+            margin-bottom: 10px;
+            break-inside: avoid;
+        }
+        .label {
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-bottom: 3px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .value {
+            padding: 5px 8px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 12px;
+            background: white;
+            border-radius: 3px;
+        }
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 10px;
+            color: #7f8c8d;
+            border-top: 1px dashed #e0e0e0;
+            padding-top: 10px;
+        }
+        .qr-code {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .qr-placeholder {
+            border: 1px dashed #ccc;
+            padding: 10px;
+            display: inline-block;
+            font-size: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        .signature-area {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-line {
+            border-top: 1px solid #333;
+            width: 150px;
+            text-align: center;
+            padding-top: 5px;
+            font-size: 10px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .status-validated {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            color: rgba(52, 152, 219, 0.05);
+            z-index: -1;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>Registration Form</h2>
-        <h3>{{ registration.inscription_code }}</h3>
-    </div>
-
-    <div class="section">
-        <div class="section-title">Personal Information</div>
-        <div class="row">
-            <div class="label">Full Name:</div>
-            <div class="value">{{ registration.first_name }} {{ registration.last_name }}</div>
+    <div class="document">
+        <div class="watermark">{{ settings.organization_name }}</div>
+        <div class="header">
+            <!-- Fix the image source path to use the correct organization logo path -->
+            <img src="{{ url_for('static', filename='uploads/' + settings.organization_logo, _external=True) }}" alt="{{ settings.organization_name }} Logo" class="logo">
+            <div>
+                <h2>{{ settings.organization_name }} - Registration Form</h2>
+                <h3>Registration #{{ registration.inscription_code }}</h3>
+            </div>
         </div>
-        <!-- Add all other personal info fields similarly -->
-    </div>
 
-    <div class="section">
-        <div class="section-title">Course Information</div>
-        <div class="row">
-            <div class="label">Course:</div>
-            <div class="value">{{ registration.course.name }}</div>
+        <div class="columns-container">
+            <!-- Personal Information -->
+            <div class="section">
+                <div class="section-title">Personal Information</div>
+                <div class="info-item">
+                    <div class="label">Full Name</div>
+                    <div class="value highlight">
+                        <span style="display: inline-block; width: 48%;">EN: {{ registration.first_name }} {{ registration.last_name }}</span>
+                        <span style="display: inline-block; width: 48%; text-align: right;">AR: {{ registration.first_name_ar }} {{ registration.last_name_ar }}</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Birth Information</div>
+                    <div class="value">
+                        <span style="display: inline-block; width: 48%;">Date: {{ registration.birth_date.strftime('%B %d, %Y') }}</span>
+                        <span style="display: inline-block; width: 48%; text-align: right;">Place: {{ registration.birth_municipality.name }}, {{ registration.birth_state.name }}</span>
+                    </div>
+                </div>
+                <!-- Other personal info items remain unchanged -->
+            </div>
+
+            <!-- Course Information -->
+            <div class="section">
+                <div class="section-title">Course Information</div>
+                <div class="info-item">
+                    <div class="label">Course Details</div>
+                    <div class="value highlight">
+                        <span style="display: inline-block; width: 60%;">{{ registration.course.name }}</span>
+                        <span style="display: inline-block; width: 38%; text-align: right;">Level: {{ registration.course_level.name }}</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Session</div>
+                    <div class="value">{{ registration.session.name }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Group</div>
+                    <div class="value">
+                        {% if registration.group %}
+                            {{ registration.group.group_name }}
+                        {% else %}
+                            Not assigned
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Personal Info -->
+            <div class="section">
+                <div class="section-title">Contact Information</div>
+                <div class="info-item">
+                    <div class="label">Phone Number</div>
+                    <div class="value">{{ registration.tel }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Address</div>
+                    <div class="value">{{ registration.address }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Profession</div>
+                    <div class="value">{{ registration.profession.name }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Registration Date</div>
+                    <div class="value">{{ registration.registration_date.strftime('%B %d, %Y') }}</div>
+                </div>
+            </div>
+
+            <!-- Additional Course Info -->
+            <div class="section">
+                <div class="section-title">Payment & Status</div>
+                <div class="info-item">
+                    <div class="label">Registration Fee</div>
+                    <div class="value highlight">{{ registration.paid_fee_value }} DZD</div>
+                </div>
+                <div class="info-item">
+                    <div class="label">Status</div>
+                    <div class="value">
+                        {% if registration.registration_validated %}
+                            <span class="status-validated">✓ Validated</span>
+                        {% else %}
+                            <span class="status-pending">⟳ Pending Validation</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- Add all other course info fields similarly -->
-    </div>
 
-    <div class="footer">
-        <p>Generated on {{ now.strftime('%Y-%m-%d') }}</p>
+        <div class="qr-code">
+            <div class="qr-placeholder">
+                QR Code: {{ registration.inscription_code }}
+            </div>
+        </div>
+
+        <div class="signature-area">
+            <div>
+                <div class="signature-line">Student Signature</div>
+            </div>
+            <div>
+                <div class="signature-line">Administrator Signature</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Generated on {{ now.strftime('%Y-%m-%d at %H:%M') }} | {{ settings.organization_name }} | This document is official proof of registration</p>
+        </div>
     </div>
 </body>
 </html>

@@ -332,6 +332,7 @@ def view_registration(registration_id):
 @login_required
 def generate_registration_pdf(registration_id):
     registration = Course_Registration.query.get_or_404(registration_id)
+    settings = AppSettings.query.get(1)  # Add this line to get settings
     
     # Check permissions
     if not (current_user.is_admin or current_user.id == registration.user_id):
@@ -343,7 +344,8 @@ def generate_registration_pdf(registration_id):
     html = render_template(
         'pdf/registration.html', 
         registration=registration,
-        now=datetime.now()  # Add this line
+        settings=settings,  # Add this line
+        now=datetime.now()
     )
     
     # PDF options
