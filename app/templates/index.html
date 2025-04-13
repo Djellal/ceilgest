@@ -1,26 +1,183 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Ceilgest{% endblock %}
+{% block title %}Home - {{ settings.organization_name }}{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-12 mx-auto">
-        <!-- Hero Section with Background -->
-        <div class="card shadow mb-4 hero-card">
-            <div class="card-body p-4 p-md-5 text-center">
-                <h1 class="display-4 fw-bold mb-3">Welcome to {{ settings.organization_name }}</h1>
+<!-- Hero Section with Modern Design -->
+<div class="hero-section mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 py-5">
+                <h1 class="display-4 fw-bold mb-3 text-primary">Welcome to {{ settings.organization_name }}</h1>
                 <p class="lead mb-4">We offer comprehensive language courses and specialized workshops designed to help you achieve fluency and cultural understanding.</p>
+                
                 {% if not current_user.is_authenticated %}
-                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 gap-3">Get Started</a>
-                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">Sign In</a>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-start mt-4">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 gap-3">
+                        <i class="bi bi-person-plus me-2"></i>Get Started
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-4">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                    </a>
+                </div>
+                {% else %}
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-start mt-4">
+                    <a href="{{ url_for('main.student_dashboard' if current_user.is_student else 'main.admin_dashboard') }}" 
+                       class="btn btn-primary btn-lg px-4 gap-3">
+                        <i class="bi bi-speedometer2 me-2"></i>Go to Dashboard
+                    </a>
+                    {% if current_user.is_student and settings.registration_opened %}
+                    <a href="{{ url_for('main.register_course') }}" class="btn btn-success btn-lg px-4">
+                        <i class="bi bi-journal-plus me-2"></i>Register for Course
+                    </a>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="{{ url_for('static', filename='img/language-learning.svg') }}" alt="Language Learning" class="img-fluid hero-image">
+            </div>
         </div>
+    </div>
+</div>
 
-        <!-- Available Courses Section -->
-        {% include 'partials/courses_section.html' %}
+<!-- Features Section -->
+<div class="container mb-5">
+    <div class="row text-center">
+        <div class="col-12 mb-4">
+            <h2 class="section-title">Why Choose Us</h2>
+            <div class="section-divider"></div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-mortarboard"></i>
+                </div>
+                <h3>Expert Teachers</h3>
+                <p>Learn from qualified instructors with years of teaching experience.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-translate"></i>
+                </div>
+                <h3>Diverse Courses</h3>
+                <p>Choose from a wide range of language courses and specialized workshops.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <h3>Track Progress</h3>
+                <p>Monitor your learning journey with our comprehensive tracking system.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Available Courses Section with Enhanced Design -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h2 class="section-title">Available Courses</h2>
+            <div class="section-divider"></div>
+            <p class="lead">Explore our diverse range of courses designed to meet your learning needs</p>
+        </div>
+    </div>
+    
+    <div class="course-filter mb-4">
+        <div class="d-flex justify-content-center flex-wrap">
+            <button class="filter-btn active" data-filter="all">All Courses</button>
+            <button class="filter-btn" data-filter="Language">Languages</button>
+            <button class="filter-btn" data-filter="Workshop">Workshops</button>
+        </div>
+    </div>
+    
+    <div class="row g-4" id="courseGrid">
+        {% for course in courses %}
+        <div class="col-md-6 col-lg-4" data-course-type="{{ course.course_type }}">
+            <div class="course-card h-100">
+                <div class="course-image-container">
+                    {% if course.image %}
+                    <img src="{{ url_for('static', filename='uploads/' + course.image) }}" class="card-img-top" alt="{{ course.name }}">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='img/course-placeholder.jpg') }}" class="card-img-top" alt="{{ course.name }}">
+                    {% endif %}
+                    <div class="course-badge">{{ course.course_type }}</div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ course.name }}</h5>
+                    <p class="card-text">
+                        <span class="badge bg-primary me-2">{{ course.duration }} weeks</span>
+                        <span class="badge bg-secondary">{{ course.levels|length }} levels</span>
+                    </p>
+                    <a href="#" class="btn btn-outline-primary mt-2">Learn More</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Testimonials Section -->
+<div class="testimonials-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h2 class="section-title text-white">What Our Students Say</h2>
+                <div class="section-divider bg-white"></div>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"The language courses here have transformed my ability to communicate. The teachers are exceptional and the curriculum is well-structured."</p>
+                                    <h5>Sarah Johnson</h5>
+                                    <p class="testimonial-info">English Course Student</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"I've tried many language centers, but this one stands out for its quality of teaching and supportive learning environment."</p>
+                                    <h5>Mohammed Ali</h5>
+                                    <p class="testimonial-info">French Course Student</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="testimonial-card">
+                                <div class="testimonial-content">
+                                    <p>"The workshops offered here are practical and relevant. I've gained skills that I use daily in my professional life."</p>
+                                    <h5>Amina Benali</h5>
+                                    <p class="testimonial-info">Workshop Participant</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -46,32 +203,150 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 </script>
 
 <style>
-.hero-card {
-    background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
-                url('{{ url_for("static", filename="img/language-bg.jpg") }}') center/cover;
-    border-radius: 15px;
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 50px 0;
+    border-radius: 0 0 50px 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-.course-card {
+.hero-image {
+    animation: float 6s ease-in-out infinite;
+    max-height: 400px;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Section Styling */
+.section-title {
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.section-divider {
+    height: 4px;
+    width: 70px;
+    background: var(--primary-color);
+    margin: 0 auto 30px;
+    border-radius: 2px;
+}
+
+/* Feature Cards */
+.feature-card {
+    padding: 30px 20px;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
-    border-radius: 10px;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+/* Course Cards */
+.course-card {
+    border-radius: 15px;
     overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
     border: none;
 }
 
 .course-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.course-image-container {
+    position: relative;
+    overflow: hidden;
+    height: 200px;
 }
 
 .card-img-top {
+    height: 100%;
+    object-fit: cover;
     transition: transform 0.5s ease;
 }
 
 .course-card:hover .card-img-top {
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
+.course-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+/* Filter Buttons */
+.course-filter {
+    margin: 20px 0;
+}
+
+.filter-btn {
+    background: none;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 20px;
+    margin: 0 5px 10px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #2c3e50 100%);
+    color: white;
+    border-radius: 50px 50px 0 0;
+    margin-top: 50px;
+}
+
+.testimonial-card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 30px;
+    margin: 20px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.testimonial-content p {
+    font-size: 1.1rem;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.testimonial-info {
+    opacity: 0.8;
+}
+
+/* Animation */
 .fade-in {
     animation: fadeIn 0.5s;
 }
@@ -79,20 +354,6 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-.btn {
-    border-radius: 5px;
-    transition: all 0.3s;
-}
-
-.btn-primary {
-    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
 }
 </style>
 {% endblock %}

@@ -175,7 +175,23 @@ class Course_Registration(db.Model):
     @staticmethod
     def generate_inscription_code():
         from datetime import datetime
-        return f"REG-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        from sqlalchemy import func
+        
+        # Get the current session
+        settings = AppSettings.query.first()
+        if not settings or not settings.current_session_id:
+            return f"REG-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            
+        session = Session.query.get(settings.current_session_id)
+        if not session:
+            return f"REG-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            
+        # Get the count of registrations for this session
+        count = db.session.query(func.count(Course_Registration.id)).filter(
+            Course_Registration.session_id == settings.current_session_id
+        ).scalar()
+        
+        return f"{session.code}/{count + 1:04d}"  # Changed to format with 4 digits
 
 
 class Group(db.Model):

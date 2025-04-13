@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">
+                <i class="bi bi-file-earmark-text me-2"></i>
+                Registration Details - {{ registration.course.name }}
+            </h2>
+            <span class="badge bg-{{ 'success' if registration.registration_validated else 'warning' }} fs-6">
+                {{ 'Validated' if registration.registration_validated else 'Pending' }}
+            </span>
+        </div>
+        
+        <div class="card-body">
+            <!-- Header with key info -->
+            <div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h5 class="mb-1">
+                        <i class="bi bi-person-badge me-2"></i>
+                        {{ registration.first_name }} {{ registration.last_name }}
+                    </h5>
+                    <p class="mb-0">
+                        <i class="bi bi-calendar me-2"></i>
+                        Registered on {{ registration.registration_date.strftime('%B %d, %Y') }}
+                    </p>
+                </div>
+                <div class="text-end">
+                    <h5 class="mb-1">
+                        <i class="bi bi-upc-scan me-2"></i>
+                        {{ registration.inscription_code }}
+                    </h5>
+                    <p class="mb-0">
+                        <i class="bi bi-cash-coin me-2"></i>
+                        {{ registration.paid_fee_value }} DZD
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Personal Information -->
+                <div class="col-lg-6">
+                    <div class="card h-100 border-primary">
+                        <div class="card-header bg-light-primary">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person-vcard me-2"></i>
+                                Personal Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Full Name (EN)</dt>
+                                <dd class="col-sm-8">{{ registration.first_name }} {{ registration.last_name }}</dd>
+
+                                <dt class="col-sm-4 text-muted">Full Name (AR)</dt>
+                                <dd class="col-sm-8">{{ registration.first_name_ar }} {{ registration.last_name_ar }}</dd>
+
+                                <dt class="col-sm-4 text-muted">Birth Date</dt>
+                                <dd class="col-sm-8">{{ registration.birth_date.strftime('%B %d, %Y') }}</dd>
+
+                                <dt class="col-sm-4 text-muted">Phone</dt>
+                                <dd class="col-sm-8">
+                                    <a href="tel:{{ registration.tel }}" class="text-decoration-none">
+                                        <i class="bi bi-telephone me-2"></i>{{ registration.tel }}
+                                    </a>
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Address</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-geo-alt me-2"></i>{{ registration.address }}
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Birth Place</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-pin-map me-2"></i>
+                                    {{ registration.birth_municipality.name }}, {{ registration.birth_state.name }}
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Profession</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-briefcase me-2"></i>{{ registration.profession.name }}
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Information -->
+                <div class="col-lg-6">
+                    <div class="card h-100 border-info">
+                        <div class="card-header bg-light-info">
+                            <h5 class="mb-0">
+                                <i class="bi bi-book me-2"></i>
+                                Course Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-4 text-muted">Course</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-bookmark me-2"></i>{{ registration.course.name }}
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Level</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-bar-chart me-2"></i>{{ registration.course_level.name }}
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Session</dt>
+                                <dd class="col-sm-8">
+                                    <i class="bi bi-calendar-range me-2"></i>{{ registration.session.name }}
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Group</dt>
+                                <dd class="col-sm-8">
+                                    {% if registration.group %}
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-people me-1"></i>{{ registration.group.group_name }}
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Not assigned</span>
+                                    {% endif %}
+                                </dd>
+
+                                <dt class="col-sm-4 text-muted">Status</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-{{ 'success' if registration.registration_validated else 'warning' }}">
+                                        {{ 'Validated' if registration.registration_validated else 'Pending validation' }}
+                                    </span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Section -->
+            {% if current_user.is_admin %}
+            <div class="card mt-4 border-danger">
+                <div class="card-header bg-light-danger">
+                    <h5 class="mb-0">
+                        <i class="bi bi-shield-lock me-2"></i>
+                        Administration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Notes</label>
+                        <div class="p-3 bg-light rounded">
+                            {{ registration.notes or 'No admin notes available' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ url_for('main.student_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                </a>
+                
+                {% if current_user.is_admin or (current_user.is_student and current_user.id == registration.user_id) %}
+                <div class="btn-group">
+                    <a href="{{ url_for('main.edit_registration', registration_id=registration.id) }}" 
+                       class="btn btn-primary">
+                        <i class="bi bi-pencil me-2"></i>Edit Registration
+                    </a>
+                    <button class="btn btn-outline-primary">
+                        <i class="bi bi-printer me-2"></i>Print
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

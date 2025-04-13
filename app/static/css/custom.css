@@ -1,0 +1,18 @@
+.bg-light-primary {
+    background-color: #e7f5ff;
+}
+.bg-light-info {
+    background-color: #e7f5fe;
+}
+.bg-light-danger {
+    background-color: #fff5f5;
+}
+.card.border-primary .card-header {
+    border-bottom: 1px solid #0d6efd;
+}
+.card.border-info .card-header {
+    border-bottom: 1px solid #0dcaf0;
+}
+.card.border-danger .card-header {
+    border-bottom: 1px solid #dc3545;
+}

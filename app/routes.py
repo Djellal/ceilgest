@@ -144,44 +144,112 @@ def admin_registrations():
         flash('Access denied', 'danger')
         return redirect(url_for('main.index'))
     
+    settings = AppSettings.query.get(1)
+    
     # Get filter parameters
+    search = request.args.get('search', '')
     session_id = request.args.get('session_id', type=int)
     course_id = request.args.get('course_id', type=int)
     level_id = request.args.get('level_id', type=int)
     group_id = request.args.get('group_id', type=int)
     
-    # Start with base query
+    # Default to current session if no session filter
+    if not session_id:
+        session_id = settings.current_session_id
+    
+    # Build query
     query = Course_Registration.query
     
-    # Apply filters
+    if search:
+        query = query.filter(
+            db.or_(
+                Course_Registration.first_name.ilike(f'%{search}%'),
+                Course_Registration.last_name.ilike(f'%{search}%'),
+                Course_Registration.inscription_code.ilike(f'%{search}%'),
+                Course_Registration.tel.ilike(f'%{search}%')
+            )
+        )
+    
     if session_id:
-        query = query.filter_by(session_id=session_id)
-    else:
-        # Default to current session if no filter
-        settings = AppSettings.query.get(1)
-        query = query.filter_by(session_id=settings.current_session_id)
-        
+        query = query.filter(Course_Registration.session_id == session_id)
+    
     if course_id:
-        query = query.filter_by(course_id=course_id)
+        query = query.filter(Course_Registration.course_id == course_id)
+    
     if level_id:
-        query = query.filter_by(course_level_id=level_id)
+        query = query.filter(Course_Registration.course_level_id == level_id)
+    
     if group_id:
-        query = query.filter_by(group_id=group_id)
+        query = query.filter(Course_Registration.group_id == group_id)
     
     registrations = query.order_by(Course_Registration.registration_date.desc()).all()
-    settings = AppSettings.query.get(1)
+    
+    # Handle Excel export
+    if request.args.get('export') == 'excel':
+        try:
+            import pandas as pd
+            from io import BytesIO
+            from flask import send_file
+            
+            # Create DataFrame
+            data = []
+            for reg in registrations:
+                data.append({
+                    'Code': reg.inscription_code,
+                    'First Name': reg.first_name,
+                    'Last Name': reg.last_name,
+                    'Phone': reg.tel,
+                    'Course': reg.course.name,
+                    'Level': reg.course_level.name if reg.course_level else 'N/A',
+                    'Session': reg.session.name,
+                    'Group': reg.group.group_name if reg.group else 'Not assigned',
+                    'Fee': reg.paid_fee_value,
+                    'Registration Date': reg.registration_date.strftime('%d/%m/%Y'),
+                    'Validated': 'Yes' if reg.registration_validated else 'No'
+                })
+            
+            df = pd.DataFrame(data)
+            
+            # Create Excel file
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                df.to_excel(writer, sheet_name='Registrations', index=False)
+                worksheet = writer.sheets['Registrations']
+                
+                # Format the worksheet
+                for i, col in enumerate(df.columns):
+                    column_len = max(df[col].astype(str).map(len).max(), len(col) + 2)
+                    worksheet.set_column(i, i, column_len)
+            
+            output.seek(0)
+            
+            # Generate filename with date
+            from datetime import datetime
+            filename = f"registrations_{datetime.now().strftime('%Y%m%d')}.xlsx"
+            
+            return send_file(
+                output, 
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                as_attachment=True,
+                download_name=filename
+            )
+        except ImportError:
+            flash('Excel export requires pandas and xlsxwriter packages', 'warning')
+            return redirect(url_for('main.admin_registrations'))
+    
+    # Get dropdown options for filters
     sessions = Session.query.all()
     courses = Course.query.all()
     levels = CourseLevel.query.all()
     groups = Group.query.all()
     
-    return render_template('admin/registrations.html', 
-                         registrations=registrations,
-                         settings=settings,
-                         sessions=sessions,
-                         courses=courses,
-                         levels=levels,
-                         groups=groups)
+    return render_template('admin/registrations.html',
+                          settings=settings,
+                          registrations=registrations,
+                          sessions=sessions,
+                          courses=courses,
+                          levels=levels,
+                          groups=groups)
 
 
 @bp.route('/edit-registration/<int:registration_id>', methods=['GET', 'POST'])
@@ -239,4 +307,21 @@ def get_municipalities():
     state_id = request.args.get('state_id')
     municipalities = Municipality.query.filter_by(state_id=state_id).all()
     return jsonify([{'id': m.id, 'name': m.name} for m in municipalities])
+
+
+@bp.route('/view-registration/<int:registration_id>')
+@login_required
+def view_registration(registration_id):
+    registration = Course_Registration.query.get_or_404(registration_id)
+    settings = AppSettings.query.get(1)
+    
+    # Check permissions
+    if not (current_user.is_admin or 
+            (current_user.is_student and current_user.id == registration.user_id)):
+        flash('Access denied', 'danger')
+        return redirect(url_for('main.student_dashboard'))
+    
+    return render_template('view_registration.html',
+                         registration=registration,
+                         settings=settings)
 
