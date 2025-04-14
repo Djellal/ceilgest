@@ -2,150 +2,179 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="card shadow">
+    <div class="card shadow-lg border-primary">
         <div class="card-header bg-primary text-white">
-            <h2>Course Registration - {{ current_session.name }}</h2>
+            <h2><i class="bi bi-pencil-square me-2"></i>Course Registration - {{ current_session.name }}</h2>
         </div>
-        <div class="card-body">
-            <form method="POST">
-                <h4 class="mb-3">Personal Information</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person me-2"></i>First Name (English)</label>
-                            <input type="text" class="form-control" name="first_name" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person me-2"></i>Last Name (English)</label>
-                            <input type="text" class="form-control" name="last_name" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person me-2"></i>First Name (Arabic)</label>
-                            <input type="text" class="form-control" name="first_name_ar" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person me-2"></i>Last Name (Arabic)</label>
-                            <input type="text" class="form-control" name="last_name_ar" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-calendar me-2"></i>Birth Date</label>
-                            <input type="date" class="form-control" name="birth_date" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-telephone me-2"></i>Phone Number</label>
-                            <input type="tel" class="form-control" name="tel"> <!-- Removed required attribute -->
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label"><i class="bi bi-house me-2"></i>Address</label>
-                    <textarea class="form-control" name="address"></textarea> <!-- Removed required attribute -->
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-geo-alt me-2"></i>Birth State</label>
-                            <select class="form-select" name="birth_state" id="state-select" required>
-                                {% for state in states %}
-                                <option value="{{ state.id }}">{{ state.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-geo me-2"></i>Birth Municipality</label>
-                            <select class="form-select" name="birth_municipality" id="municipality-select" required>
-                                {% for state in states %}
-                                {% for municipality in state.municipalities %}
-                                <option value="{{ municipality.id }}" data-state="{{ state.id }}">
-                                    {{ municipality.name }}
-                                </option>
-                                {% endfor %}
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label"><i class="bi bi-briefcase me-2"></i>Profession</label>
-                    <select class="form-select" name="profession" required>
-                        {% for profession in professions %}
-                        <option value="{{ profession.id }}" data-fee="{{ profession.fee_value }}">
-                            {{ profession.name }} (Fee: {{ profession.fee_value }})
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <h4 class="mt-4 mb-3"><i class="bi bi-book me-2"></i>Course Information</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-book me-2"></i>Course</label>
-                            <select class="form-select" name="course" id="course-select" required>
-                                {% for course in courses %}
-                                <option value="{{ course.id }}">{{ course.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-bookmark me-2"></i>Course Level</label>
-                            <select class="form-select" name="course_level" id="level-select" required>
-                                {% for level in levels %}
-                                <option value="{{ level.id }}" data-course="{{ level.course_id }}">
-                                    {{ level.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label"><i class="bi bi-cash-coin me-2"></i>Fee Value</label>
-                    <input type="number" step="0.01" class="form-control" name="fee_value" id="fee-input" required>
-                </div>
-                {% if current_user.is_admin %}
-                <div class="mb-3">
-                    <label class="form-label"><i class="bi bi-pencil me-2"></i>Additional Notes</label>
-                    <textarea class="form-control" name="notes"></textarea>
-                </div>
-                {% endif %}
-                
-                <div class="card mb-3">
-                    <div class="card-header bg-light">
-                        <h5><i class="bi bi-file-text me-2"></i>Terms and Conditions</h5>
+        <div class="card-body bg-light">
+            <form method="POST" class="needs-validation" novalidate>
+                <!-- Personal Information Section -->
+                <div class="card mb-4 border-primary">
+                    <div class="card-header bg-primary bg-opacity-75 text-white">
+                        <h4 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Personal Information</h4>
                     </div>
                     <div class="card-body">
-                        <div class="terms-content" style="max-height: 200px; overflow-y: auto;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>First Name (English)</label>
+                                    <input type="text" class="form-control form-control-lg" name="first_name" required>
+                                    <div class="invalid-feedback">Please enter your first name</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>Last Name (English)</label>
+                                    <input type="text" class="form-control form-control-lg" name="last_name" required>
+                                    <div class="invalid-feedback">Please enter your last name</div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Rest of personal information fields with similar styling -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>First Name (Arabic)</label>
+                                    <input type="text" class="form-control form-control-lg" name="first_name_ar" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-person me-2"></i>Last Name (Arabic)</label>
+                                    <input type="text" class="form-control form-control-lg" name="last_name_ar" required>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- More personal information fields -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-calendar me-2"></i>Birth Date</label>
+                                    <input type="date" class="form-control form-control-lg" name="birth_date" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-telephone me-2"></i>Phone Number</label>
+                                    <input type="tel" class="form-control form-control-lg" name="tel">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="bi bi-house me-2"></i>Address</label>
+                            <textarea class="form-control" name="address" style="height: 100px"></textarea>
+                        </div>
+                        <!-- State and municipality with improved styling -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-geo-alt me-2"></i>Birth State</label>
+                                    <select class="form-select form-select-lg" name="birth_state" id="state-select" required>
+                                        {% for state in states %}
+                                        <option value="{{ state.id }}">{{ state.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-geo me-2"></i>Birth Municipality</label>
+                                    <select class="form-select form-select-lg" name="birth_municipality" id="municipality-select" required>
+                                        {% for state in states %}
+                                        {% for municipality in state.municipalities %}
+                                        <option value="{{ municipality.id }}" data-state="{{ state.id }}">
+                                            {{ municipality.name }}
+                                        </option>
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="bi bi-briefcase me-2"></i>Profession</label>
+                            <select class="form-select form-select-lg" name="profession" required>
+                                {% for profession in professions %}
+                                <option value="{{ profession.id }}" data-fee="{{ profession.fee_value }}">
+                                    {{ profession.name }} (Fee: {{ profession.fee_value }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Information Section -->
+                <div class="card mb-4 border-success">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0"><i class="bi bi-book me-2"></i>Course Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-book me-2"></i>Course</label>
+                                    <select class="form-select form-select-lg" name="course" id="course-select" required>
+                                        {% for course in courses %}
+                                        <option value="{{ course.id }}">{{ course.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold"><i class="bi bi-bookmark me-2"></i>Course Level</label>
+                                    <select class="form-select form-select-lg" name="course_level" id="level-select" required>
+                                        {% for level in levels %}
+                                        <option value="{{ level.id }}" data-course="{{ level.course_id }}">
+                                            {{ level.name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="bi bi-cash-coin me-2"></i>Fee Value</label>
+                            <div class="input-group input-group-lg">
+                                <input type="number" step="0.01" class="form-control" name="fee_value" id="fee-input" required>
+                                <span class="input-group-text">DZD</span>
+                            </div>
+                        </div>
+                        {% if current_user.is_admin %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="bi bi-pencil me-2"></i>Additional Notes</label>
+                            <textarea class="form-control" name="notes" style="height: 100px"></textarea>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Terms and Conditions with improved styling -->
+                <div class="card mb-4 border-info">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="mb-0"><i class="bi bi-file-text me-2"></i>Terms and Conditions</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="terms-content border rounded p-3" style="max-height: 200px; overflow-y: auto; background-color: #f8f9fa;">
                             {{ settings.terms_and_conditions|safe }}
+                        </div>
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" name="terms_accepted" id="terms" required>
+                            <label class="form-check-label fw-bold" for="terms">
+                                <i class="bi bi-check-circle me-2"></i>I accept the registration terms and conditions
+                            </label>
+                            <div class="invalid-feedback">You must accept the terms to continue</div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="form-check mb-4">
-                    <input class="form-check-input" type="checkbox" name="terms_accepted" id="terms" required>
-                    <label class="form-check-label" for="terms">
-                        <i class="bi bi-check-circle me-2"></i>I accept the registration terms and conditions
-                    </label>
+                <!-- Submit button with improved styling -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-send-fill me-2"></i>Submit Registration
+                    </button>
                 </div>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-send me-2"></i>Submit Registration</button>
             </form>
         </div>
     </div>
@@ -153,6 +182,21 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation')
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+
     // State and municipality handling
     const stateSelect = document.getElementById('state-select');
     const municipalitySelect = document.getElementById('municipality-select');

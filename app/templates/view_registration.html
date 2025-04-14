@@ -2,38 +2,39 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="card shadow-lg">
+    <div class="card shadow-lg border-primary">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h2 class="mb-0">
                 <i class="bi bi-file-earmark-text me-2"></i>
                 Registration Details - {{ registration.course.name }}
             </h2>
-            <span class="badge bg-{{ 'success' if registration.registration_validated else 'warning' }} fs-6">
+            <span class="badge bg-{{ 'success' if registration.registration_validated else 'warning' }} fs-5 px-3 py-2">
+                <i class="bi bi-{{ 'check-circle-fill' if registration.registration_validated else 'exclamation-circle-fill' }} me-2"></i>
                 {{ 'Validated' if registration.registration_validated else 'Pending' }}
             </span>
         </div>
         
-        <div class="card-body">
+        <div class="card-body bg-light">
             <!-- Header with key info -->
-            <div class="alert alert-info d-flex justify-content-between align-items-center mb-4">
+            <div class="alert alert-info d-flex justify-content-between align-items-center mb-4 shadow-sm">
                 <div>
-                    <h5 class="mb-1">
+                    <h4 class="mb-1 fw-bold">
                         <i class="bi bi-person-badge me-2"></i>
                         {{ registration.first_name }} {{ registration.last_name }}
-                    </h5>
-                    <p class="mb-0">
+                    </h4>
+                    <p class="mb-0 fs-5">
                         <i class="bi bi-calendar me-2"></i>
                         Registered on {{ registration.registration_date.strftime('%B %d, %Y') }}
                     </p>
                 </div>
                 <div class="text-end">
-                    <h5 class="mb-1">
+                    <h5 class="mb-1 fw-bold">
                         <i class="bi bi-upc-scan me-2"></i>
                         {{ registration.inscription_code }}
                     </h5>
-                    <p class="mb-0">
+                    <p class="mb-0 fs-5">
                         <i class="bi bi-cash-coin me-2"></i>
-                        {{ registration.paid_fee_value }} DZD
+                        <span class="fw-bold">{{ registration.paid_fee_value }}</span> DZD
                     </p>
                 </div>
             </div>
@@ -41,45 +42,52 @@
             <div class="row g-4">
                 <!-- Personal Information -->
                 <div class="col-lg-6">
-                    <div class="card h-100 border-primary">
-                        <div class="card-header bg-light-primary">
-                            <h5 class="mb-0">
+                    <div class="card h-100 border-primary shadow-sm">
+                        <div class="card-header bg-primary bg-opacity-75 text-white">
+                            <h5 class="mb-0 fw-bold">
                                 <i class="bi bi-person-vcard me-2"></i>
                                 Personal Information
                             </h5>
                         </div>
                         <div class="card-body">
-                            <dl class="row">
-                                <dt class="col-sm-4 text-muted">Full Name (EN)</dt>
-                                <dd class="col-sm-8">{{ registration.first_name }} {{ registration.last_name }}</dd>
+                            <dl class="row g-3">
+                                <dt class="col-sm-4 text-primary fw-semibold">Full Name (EN)</dt>
+                                <dd class="col-sm-8 fs-5">{{ registration.first_name }} {{ registration.last_name }}</dd>
 
-                                <dt class="col-sm-4 text-muted">Full Name (AR)</dt>
-                                <dd class="col-sm-8">{{ registration.first_name_ar }} {{ registration.last_name_ar }}</dd>
+                                <dt class="col-sm-4 text-primary fw-semibold">Full Name (AR)</dt>
+                                <dd class="col-sm-8 fs-5">{{ registration.first_name_ar }} {{ registration.last_name_ar }}</dd>
 
-                                <dt class="col-sm-4 text-muted">Birth Date</dt>
-                                <dd class="col-sm-8">{{ registration.birth_date.strftime('%B %d, %Y') }}</dd>
-
-                                <dt class="col-sm-4 text-muted">Phone</dt>
+                                <dt class="col-sm-4 text-primary fw-semibold">Birth Date</dt>
                                 <dd class="col-sm-8">
-                                    <a href="tel:{{ registration.tel }}" class="text-decoration-none">
+                                    <i class="bi bi-calendar-date me-2"></i>
+                                    {{ registration.birth_date.strftime('%B %d, %Y') }}
+                                </dd>
+
+                                <dt class="col-sm-4 text-primary fw-semibold">Phone</dt>
+                                <dd class="col-sm-8">
+                                    <a href="tel:{{ registration.tel }}" class="text-decoration-none btn btn-outline-primary btn-sm">
                                         <i class="bi bi-telephone me-2"></i>{{ registration.tel }}
                                     </a>
                                 </dd>
 
-                                <dt class="col-sm-4 text-muted">Address</dt>
+                                <dt class="col-sm-4 text-primary fw-semibold">Address</dt>
                                 <dd class="col-sm-8">
-                                    <i class="bi bi-geo-alt me-2"></i>{{ registration.address }}
+                                    <div class="p-2 bg-light rounded border">
+                                        <i class="bi bi-geo-alt me-2"></i>{{ registration.address }}
+                                    </div>
                                 </dd>
 
-                                <dt class="col-sm-4 text-muted">Birth Place</dt>
+                                <dt class="col-sm-4 text-primary fw-semibold">Birth Place</dt>
                                 <dd class="col-sm-8">
                                     <i class="bi bi-pin-map me-2"></i>
                                     {{ registration.birth_municipality.name }}, {{ registration.birth_state.name }}
                                 </dd>
 
-                                <dt class="col-sm-4 text-muted">Profession</dt>
+                                <dt class="col-sm-4 text-primary fw-semibold">Profession</dt>
                                 <dd class="col-sm-8">
-                                    <i class="bi bi-briefcase me-2"></i>{{ registration.profession.name }}
+                                    <span class="badge bg-secondary bg-opacity-75 text-white fs-6 px-3 py-2">
+                                        <i class="bi bi-briefcase me-2"></i>{{ registration.profession.name }}
+                                    </span>
                                 </dd>
                             </dl>
                         </div>
@@ -88,46 +96,59 @@
 
                 <!-- Course Information -->
                 <div class="col-lg-6">
-                    <div class="card h-100 border-info">
-                        <div class="card-header bg-light-info">
-                            <h5 class="mb-0">
+                    <div class="card h-100 border-info shadow-sm">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0 fw-bold">
                                 <i class="bi bi-book me-2"></i>
                                 Course Information
                             </h5>
                         </div>
                         <div class="card-body">
-                            <dl class="row">
-                                <dt class="col-sm-4 text-muted">Course</dt>
-                                <dd class="col-sm-8">
+                            <dl class="row g-3">
+                                <dt class="col-sm-4 text-info fw-semibold">Course</dt>
+                                <dd class="col-sm-8 fs-5">
                                     <i class="bi bi-bookmark me-2"></i>{{ registration.course.name }}
                                 </dd>
 
-                                <dt class="col-sm-4 text-muted">Level</dt>
+                                <dt class="col-sm-4 text-info fw-semibold">Level</dt>
                                 <dd class="col-sm-8">
-                                    <i class="bi bi-bar-chart me-2"></i>{{ registration.course_level.name }}
+                                    <span class="badge bg-info text-white fs-6 px-3 py-2">
+                                        <i class="bi bi-bar-chart me-2"></i>{{ registration.course_level.name }}
+                                    </span>
                                 </dd>
 
-                                <dt class="col-sm-4 text-muted">Session</dt>
+                                <dt class="col-sm-4 text-info fw-semibold">Session</dt>
                                 <dd class="col-sm-8">
                                     <i class="bi bi-calendar-range me-2"></i>{{ registration.session.name }}
                                 </dd>
 
-                                <dt class="col-sm-4 text-muted">Group</dt>
+                                <dt class="col-sm-4 text-info fw-semibold">Group</dt>
                                 <dd class="col-sm-8">
                                     {% if registration.group %}
-                                    <span class="badge bg-primary">
+                                    <span class="badge bg-primary fs-6 px-3 py-2">
                                         <i class="bi bi-people me-1"></i>{{ registration.group.group_name }}
                                     </span>
                                     {% else %}
-                                    <span class="badge bg-secondary">Not assigned</span>
+                                    <span class="badge bg-secondary fs-6 px-3 py-2">
+                                        <i class="bi bi-people me-1"></i>Not assigned
+                                    </span>
                                     {% endif %}
                                 </dd>
 
-                                <dt class="col-sm-4 text-muted">Status</dt>
+                                <dt class="col-sm-4 text-info fw-semibold">Status</dt>
                                 <dd class="col-sm-8">
-                                    <span class="badge bg-{{ 'success' if registration.registration_validated else 'warning' }}">
-                                        {{ 'Validated' if registration.registration_validated else 'Pending validation' }}
-                                    </span>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1" style="height: 25px;">
+                                            <div class="progress-bar bg-{{ 'success' if registration.registration_validated else 'warning' }}" 
+                                                 role="progressbar" 
+                                                 style="width: {{ '100%' if registration.registration_validated else '50%' }};" 
+                                                 aria-valuenow="{{ '100' if registration.registration_validated else '50' }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                                {{ 'Validated' if registration.registration_validated else 'Pending validation' }}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </dd>
                             </dl>
                         </div>
@@ -137,17 +158,17 @@
 
             <!-- Admin Section -->
             {% if current_user.is_admin %}
-            <div class="card mt-4 border-danger">
-                <div class="card-header bg-light-danger">
-                    <h5 class="mb-0">
+            <div class="card mt-4 border-danger shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0 fw-bold">
                         <i class="bi bi-shield-lock me-2"></i>
                         Administration
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Notes</label>
-                        <div class="p-3 bg-light rounded">
+                        <label class="form-label fw-bold text-danger">Notes</label>
+                        <div class="p-3 bg-light rounded border border-danger">
                             {{ registration.notes or 'No admin notes available' }}
                         </div>
                     </div>
@@ -157,19 +178,20 @@
 
             <!-- Action Buttons -->
             <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('main.student_dashboard') }}" class="btn btn-outline-secondary">
+                <a href="{{ url_for('main.student_dashboard') }}" class="btn btn-outline-secondary btn-lg">
                     <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
                 </a>
                 
                 {% if current_user.is_admin or (current_user.is_student and current_user.id == registration.user_id) %}
                 <div class="btn-group">
                     <a href="{{ url_for('main.edit_registration', registration_id=registration.id) }}" 
-                       class="btn btn-primary">
+                       class="btn btn-primary btn-lg">
                         <i class="bi bi-pencil me-2"></i>Edit Registration
                     </a>
-                    <button class="btn btn-outline-primary" onclick="window.location.href='{{ url_for('main.generate_registration_pdf', registration_id=registration.id) }}'">
+                    <a href="{{ url_for('main.generate_registration_pdf', registration_id=registration.id) }}"
+                       class="btn btn-outline-primary btn-lg">
                         <i class="bi bi-printer me-2"></i>Print
-                    </button>
+                    </a>
                 </div>
                 {% endif %}
             </div>
