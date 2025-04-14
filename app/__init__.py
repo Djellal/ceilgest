@@ -25,12 +25,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
     ckeditor = CKEditor(app)
     
-    # Print the database URI to verify the connection string
-    print("Database URI:", app.config['SQLALCHEMY_DATABASE_URI'])
-    
-    # Remove this line: admin = Admin(app, name='Ceilgest Admin', template_mode='bootstrap4')
-    
-    
+      
     
     # Enable SQL query recording
     app.config['SQLALCHEMY_RECORD_QUERIES'] = True

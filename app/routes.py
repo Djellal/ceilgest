@@ -2,11 +2,22 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from flask_login import login_required, current_user
 from app.models import db, Course_Registration, Session, Course, CourseLevel, State, Municipality, Profession, Group
 from datetime import datetime
-from app.models import AppSettings
+from app.models import AppSettings, User  # Add User to imports
 import pdfkit
 from flask import make_response
+from functools import wraps  # Add this import
 
 bp = Blueprint('main', __name__)
+
+# Add admin_required decorator
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_admin:
+            flash('Access denied', 'danger')
+            return redirect(url_for('main.index'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @bp.route('/')
 def index():
@@ -121,17 +132,40 @@ def student_dashboard():
     )
 
 
-@bp.route('/admin-dashboard')
+@bp.route('/admin/dashboard')
 @login_required
+@admin_required
 def admin_dashboard():
-    if not current_user.is_admin:
-        flash('Access denied', 'danger')
-        return redirect(url_for('main.index'))
+    settings = AppSettings.query.get(1)
     
-    settings = AppSettings.query.get(1)  # Add this line to get settings
-    return render_template('admin_dashboard.html', settings=settings)  # Pass settings to template
-    # Add your admin dashboard statistics and data here
-    return render_template('admin_dashboard.html')
+    # Calculate statistics
+    stats = {
+        'total_users': User.query.count(),
+        # Fix the students count - assuming is_student is a property or column
+        'students_count': User.query.filter(User.is_student == True).count(),
+        'active_courses': Course.query.filter_by(is_active=True).count(),
+        'total_levels': CourseLevel.query.count(),
+        'current_registrations': Course_Registration.query.filter_by(session_id=settings.current_session_id).count(),
+        'validated_registrations': Course_Registration.query.filter_by(
+            session_id=settings.current_session_id, 
+            registration_validated=True
+        ).count(),
+        'total_revenue': db.session.query(db.func.sum(Course_Registration.paid_fee_value)).filter_by(
+            session_id=settings.current_session_id
+        ).scalar() or 0
+    }
+    
+    # Get recent registrations
+    recent_registrations = Course_Registration.query.order_by(
+        Course_Registration.registration_date.desc()
+    ).limit(5).all()
+    
+    return render_template(
+        'admin_dashboard.html',
+        settings=settings,
+        stats=stats,
+        recent_registrations=recent_registrations
+    )
 
 
 @bp.route('/about')
@@ -155,6 +189,7 @@ def admin_registrations():
     course_id = request.args.get('course_id', type=int)
     level_id = request.args.get('level_id', type=int)
     group_id = request.args.get('group_id', type=int)
+    status = request.args.get('status')  # Add status parameter
     
     # Default to current session if no session filter
     if not session_id:
@@ -184,6 +219,12 @@ def admin_registrations():
     
     if group_id:
         query = query.filter(Course_Registration.group_id == group_id)
+    
+    # Add status filter
+    if status == 'validated':
+        query = query.filter(Course_Registration.registration_validated == True)
+    elif status == 'pending':
+        query = query.filter(Course_Registration.registration_validated == False)
     
     registrations = query.order_by(Course_Registration.registration_date.desc()).all()
     
@@ -281,9 +322,29 @@ def edit_registration(registration_id):
             if current_user.is_admin:
                 registration.registration_validated = 'registration_validated' in request.form
             
+            # Handle course changes
+            if 'course' in request.form:
+                new_course_id = int(request.form['course'])
+                registration.course_id = new_course_id
+                
+                # If admin is changing course level
+                if current_user.is_admin and 'course_level' in request.form:
+                    registration.course_level_id = int(request.form['course_level'])
+                # If student is changing course, set appropriate level
+                elif current_user.id == registration.user_id and new_course_id != registration.course_id:
+                    # Find the first level for this course
+                    first_level = CourseLevel.query.filter_by(course_id=new_course_id).order_by(CourseLevel.level_order).first()
+                    if first_level:
+                        registration.course_level_id = first_level.id
+            
             db.session.commit()
             flash('Registration updated successfully', 'success')
-            return redirect(url_for('main.student_dashboard'))
+            if current_user.is_admin:
+                return redirect(url_for('main.admin_registrations'))
+            elif current_user.is_teacher:
+                return redirect(url_for('main.teacher_dashboard'))
+            else:
+                return redirect(url_for('main.student_dashboard'))
         except Exception as e:
             db.session.rollback()
             flash(f'Error updating registration: {str(e)}', 'danger')
@@ -368,4 +429,28 @@ def generate_registration_pdf(registration_id):
     response.headers['Content-Disposition'] = f'inline; filename=registration_{registration.inscription_code}.pdf'
     
     return response
+
+
+@bp.route('/admin/courses')
+@login_required
+@admin_required
+def admin_courses():
+    settings = AppSettings.query.get(1)
+    courses = Course.query.all()
+    return render_template('admin/courses.html', settings=settings, courses=courses)
+
+@bp.route('/admin/users')
+@login_required
+@admin_required
+def admin_users():
+    settings = AppSettings.query.get(1)
+    users = User.query.all()
+    return render_template('admin/users.html', settings=settings, users=users)
+
+@bp.route('/admin/settings')
+@login_required
+@admin_required
+def admin_settings():
+    settings = AppSettings.query.get(1)
+    return render_template('admin/settings.html', settings=settings)
 

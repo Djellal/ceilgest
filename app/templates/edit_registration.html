@@ -98,13 +98,34 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label"><i class="bi bi-book me-2"></i>Course</label>
+                            {% if current_user.is_admin or current_user.id == registration.user_id %}
+                            <select class="form-select" name="course" id="course-select">
+                                {% for course in courses %}
+                                <option value="{{ course.id }}" {% if course.id == registration.course_id %}selected{% endif %}>
+                                    {{ course.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% else %}
                             <input type="text" class="form-control" value="{{ registration.course.name }}" readonly>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label"><i class="bi bi-bookmark me-2"></i>Course Level</label>
+                            {% if current_user.is_admin %}
+                            <select class="form-select" name="course_level" id="level-select">
+                                {% for level in levels %}
+                                <option value="{{ level.id }}" data-course="{{ level.course_id }}" 
+                                        {% if level.id == registration.course_level_id %}selected{% endif %}>
+                                    {{ level.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            {% else %}
                             <input type="text" class="form-control" value="{{ registration.course_level.name }}" readonly>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -149,3 +170,36 @@
     </div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Course and level handling
+    const courseSelect = document.getElementById('course-select');
+    const levelSelect = document.getElementById('level-select');
+    
+    if (courseSelect && levelSelect) {
+        // Filter levels when course changes
+        courseSelect.addEventListener('change', function() {
+            const courseId = this.value;
+            
+            // Show/hide options based on course
+            Array.from(levelSelect.options).forEach(option => {
+                option.style.display = option.dataset.course === courseId ? '' : 'none';
+            });
+            
+            // Select the first visible option
+            const visibleOption = Array.from(levelSelect.options).find(opt => opt.style.display !== 'none');
+            if (visibleOption) {
+                levelSelect.value = visibleOption.value;
+            } else {
+                levelSelect.value = '';
+            }
+        });
+        
+        // Initialize on page load
+        courseSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+{% endblock scripts %}
