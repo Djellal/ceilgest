@@ -34,8 +34,10 @@
                             <td>
                                 {% if reg.group_id is none %}
                                 <a href="{{ url_for('main.edit_registration', registration_id=reg.id) }}" 
-                                   class="btn btn-sm btn-warning">Edit</a>
+                                   class="btn btn-sm btn-warning me-2">Edit</a>
                                 {% endif %}
+                                <a href="{{ url_for('main.view_registration', registration_id=reg.id) }}" 
+                                   class="btn btn-sm btn-primary">View</a>
                             </td>
                         </tr>
                         {% endfor %}

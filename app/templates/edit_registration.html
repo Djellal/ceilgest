@@ -98,7 +98,12 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label"><i class="bi bi-book me-2"></i>Course</label>
-                            {% if current_user.is_admin or current_user.id == registration.user_id %}
+                            {% if registration.registration_validated %}
+                            <div class="alert alert-success mb-2">
+                                <i class="bi bi-check-circle-fill me-2"></i>This registration has been validated
+                            </div>
+                            {% endif %}
+                            {% if current_user.is_admin or not registration.registration_validated %}
                             <select class="form-select" name="course" id="course-select">
                                 {% for course in courses %}
                                 <option value="{{ course.id }}" {% if course.id == registration.course_id %}selected{% endif %}>

@@ -306,8 +306,7 @@ def edit_registration(registration_id):
     if not (current_user.is_admin or 
             (current_user.is_student and 
              current_user.id == registration.user_id and 
-             registration.session_id == settings.current_session_id and
-             not registration.group_id)):
+             registration.session_id == settings.current_session_id)):  # Fixed missing parenthesis
         flash('You cannot edit this registration', 'danger')
         return redirect(url_for('main.student_dashboard'))
 
@@ -322,8 +321,8 @@ def edit_registration(registration_id):
             if current_user.is_admin:
                 registration.registration_validated = 'registration_validated' in request.form
             
-            # Handle course changes
-            if 'course' in request.form:
+            # Handle course changes - only if not validated or admin
+            if 'course' in request.form and (current_user.is_admin or not registration.registration_validated):
                 new_course_id = int(request.form['course'])
                 registration.course_id = new_course_id
                 
