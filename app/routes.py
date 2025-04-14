@@ -68,7 +68,8 @@ def register_course():
             db.session.add(registration)
             db.session.commit()
             flash('Registration successful!', 'success')
-            return redirect(url_for('main.index'))
+            # Redirect to view-registration page instead of index
+            return redirect(url_for('main.view_registration', registration_id=registration.id))
         except Exception as e:
             db.session.rollback()
             flash(f'Registration failed: {str(e)}', 'danger')

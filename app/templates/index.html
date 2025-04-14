@@ -35,7 +35,7 @@
                 {% endif %}
             </div>
             <div class="col-lg-6 d-none d-lg-block">
-                <img src="{{ url_for('static', filename='img/language-learning.png') }}" alt="Language Learning" class="img-fluid hero-image">
+                <img src="{{ url_for('static', filename='img/language-learning.svg') }}" alt="Language Learning" class="img-fluid hero-image">
             </div>
         </div>
     </div>
@@ -91,38 +91,9 @@
         </div>
     </div>
     
-    <div class="course-filter mb-4">
-        <div class="d-flex justify-content-center flex-wrap">
-            <button class="filter-btn active" data-filter="all">All Courses</button>
-            <button class="filter-btn" data-filter="Language">Languages</button>
-            <button class="filter-btn" data-filter="Workshop">Workshops</button>
-        </div>
-    </div>
+    {% include 'partials/courses_section.html' %}
     
-    <div class="row g-4" id="courseGrid">
-        {% for course in courses %}
-        <div class="col-md-6 col-lg-4" data-course-type="{{ course.course_type }}">
-            <div class="course-card h-100">
-                <div class="course-image-container">
-                    {% if course.image %}
-                    <img src="{{ url_for('static', filename='uploads/' + course.image) }}" class="card-img-top" alt="{{ course.name }}">
-                    {% else %}
-                    <img src="{{ url_for('static', filename='img/course-placeholder.jpg') }}" class="card-img-top" alt="{{ course.name }}">
-                    {% endif %}
-                    <div class="course-badge">{{ course.course_type }}</div>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">{{ course.name }}</h5>
-                    <p class="card-text">
-                        <span class="badge bg-primary me-2">{{ course.duration }} weeks</span>
-                        <span class="badge bg-secondary">{{ course.levels|length }} levels</span>
-                    </p>
-                    <a href="#" class="btn btn-outline-primary mt-2">Learn More</a>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+   
 </div>
 
 <!-- Testimonials Section -->
