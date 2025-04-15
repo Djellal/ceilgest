@@ -438,7 +438,7 @@ def generate_registration_pdf(registration_id):
 def admin_courses():
     settings = AppSettings.query.get(1)
     courses = Course.query.all()
-    return render_template('admin/courses.html', settings=settings, courses=courses)
+    return render_template('course/list.html', settings=settings, courses=courses)
 
 @bp.route('/admin/users')
 @login_required
