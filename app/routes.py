@@ -368,9 +368,8 @@ def edit_registration(registration_id):
     )
 
 
-@bp.route('/api/municipalities')
-def get_municipalities():
-    state_id = request.args.get('state_id')
+@bp.route('/api/municipalities/<int:state_id>')
+def get_municipalities(state_id):
     municipalities = Municipality.query.filter_by(state_id=state_id).all()
     return jsonify([{'id': m.id, 'name': m.name} for m in municipalities])
 
