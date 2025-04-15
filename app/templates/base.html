@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}CeilGest{% endblock %}</title>
+    <!-- In the title block -->
+    <title>{% block title %}CeilUfas{% endblock %}</title>
     {{ bootstrap.load_css() }}
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
@@ -37,12 +38,13 @@
 <body style="padding-top: 56px;">  <!-- Add padding to body to account for fixed navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">  <!-- Added fixed-top class -->
         <div class="container">
+            <!-- In the navbar brand section -->
             <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.index') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-mortarboard me-2" viewBox="0 0 16 16">
                     <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5ZM8 8.46 1.758 5.965 8 3.052l6.242 2.913L8 8.46Z"/>
                     <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032Zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46l-3.892-1.556Z"/>
                 </svg>
-                CeilGest
+                CeilUfas
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -52,6 +54,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('main.index') }}">
                             <i class="bi bi-house me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.about') }}">
+                            <i class="bi bi-info-circle me-1"></i> About
                         </a>
                     </li>
                     {% if current_user.is_admin %}
@@ -161,8 +168,12 @@
                              alt="{{ settings.organization_name or 'Ceilgest' }} Logo">
                     </div>
                     {% endif %}
-                    <h5 class="mb-3">{{ settings.organization_name or 'CeilGest' }}</h5>
+                    <!-- In the footer organization name section -->
+                    <h5 class="mb-3">{{ settings.organization_name or 'CeilUfas' }}</h5>
                     <p class="small">{{ settings.address or 'Empowering education through innovative technology solutions.' }}</p>
+                    
+                    <!-- In the footer copyright section -->
+                    <p class="mb-0">&copy; 2023 CeilUfas. All rights reserved.</p>
                     <div class="mt-3">
                         {% if settings.website %}
                         <a href="{{ settings.website }}" class="text-white me-2"><i class="bi bi-globe"></i></a>

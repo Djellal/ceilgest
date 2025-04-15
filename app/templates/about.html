@@ -1,43 +1,79 @@
 {% extends "base.html" %}
 
-{% block title %}About - Ceilgest{% endblock %}
+{% block title %}About - CeilUfas{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h2>About Ceilgest</h2>
+<div class="container mt-5">
+    <div class="card shadow border-0">
+        <div class="card-header bg-primary text-white py-3">
+            <h2 class="mb-0"><i class="bi bi-info-circle me-2"></i>About CeilUfas</h2>
         </div>
-        <div class="card-body">
+        <div class="card-body p-4">
             <div class="row">
                 <div class="col-md-8 mx-auto">
-                    <div class="text-center mb-4">
-                        <h3>Ceilgest Project</h3>
+                    <div class="text-center mb-5">
+                        <h3 class="fw-bold text-primary">CeilUfas Project</h3>
+                        <p class="text-muted">A modern student registration and course management system</p>
+                        <hr class="my-4 w-50 mx-auto">
                     </div>
                     
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">Developer</h5>
-                            <p class="card-text">
-                                <strong>Djellal Elkacem</strong><br>
-                                <a href="https://github.com/Djellal/ceilgest" target="_blank">
-                                    <i class="bi bi-github"></i> GitHub Project
-                                </a>
-                            </p>
+                    <div class="card mb-4 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-person-badge fs-2 text-primary me-3"></i>
+                                <h5 class="card-title mb-0 fw-bold">Developer</h5>
+                            </div>
+                            <div class="ps-5">
+                                <p class="card-text">
+                                    <strong class="fs-5">Djellal Elkacem</strong><br>
+                                    <a href="mailto:djellal.elkacem@gmail.com" class="text-decoration-none">
+                                        <i class="bi bi-envelope me-2"></i> djellal.elkacem@gmail.com
+                                    </a><br>
+                                    <a href="https://github.com/Djellal/ceilgest" target="_blank" class="text-decoration-none">
+                                        <i class="bi bi-github me-2"></i> GitHub Project
+                                    </a>
+                                </p>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title">Organization</h5>
-                            <p class="card-text">
-                                <strong>Sétif University 1 - Ferhat Abbas</strong><br>
-                                Department of Computer Science
-                            </p>
+                    <div class="card mb-4 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-building fs-2 text-primary me-3"></i>
+                                <h5 class="card-title mb-0 fw-bold">Organization</h5>
+                            </div>
+                            <div class="ps-5">
+                                <p class="card-text">
+                                    <strong class="fs-5">Sétif University 1 - Ferhat Abbas</strong><br>
+                                    <span class="badge bg-primary">CSRICTED</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="bi bi-code-square fs-2 text-primary me-3"></i>
+                                <h5 class="card-title mb-0 fw-bold">Technologies</h5>
+                            </div>
+                            <div class="ps-5">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-secondary">Python</span>
+                                    <span class="badge bg-secondary">Flask</span>
+                                    <span class="badge bg-secondary">SQLAlchemy</span>
+                                    <span class="badge bg-secondary">Bootstrap 5</span>
+                                    <span class="badge bg-secondary">JavaScript</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="card-footer bg-light text-center py-3">
+            <p class="mb-0 text-muted">© 2025 CeilUfas - All rights reserved</p>
         </div>
     </div>
 </div>
