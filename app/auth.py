@@ -210,4 +210,46 @@ def edit_user(user_id):
                          user=user, 
                          settings=settings, 
                          roles=roles)
+
+
+@bp.route('/delete-user/<int:user_id>', methods=['POST'])
+@login_required
+def delete_user(user_id):
+    if not current_user.is_admin:
+        flash('You do not have permission to delete users', 'danger')
+        return redirect(url_for('main.index'))
+    
+    # Prevent self-deletion
+    if user_id == current_user.id:
+        flash('You cannot delete your own account', 'danger')
+        return redirect(url_for('auth.manage_users'))
+    
+    user = User.query.get_or_404(user_id)
+    
+    try:
+        # Check if user has registrations
+        from app.models import Course_Registration
+        registrations = Course_Registration.query.filter_by(user_id=user_id).all()
+        
+        if registrations:
+            # Option 1: Delete associated registrations first
+            for registration in registrations:
+                db.session.delete(registration)
+            
+            # Option 2: Or you could set user_id to NULL if your schema allows it
+            # for registration in registrations:
+            #     registration.user_id = None
+            
+            # Commit the deletion of registrations first
+            db.session.commit()
+        
+        # Now delete the user
+        db.session.delete(user)
+        db.session.commit()
+        flash(f'User {user.username} has been deleted successfully', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting user: {str(e)}', 'danger')
+    
+    return redirect(url_for('auth.manage_users'))
     

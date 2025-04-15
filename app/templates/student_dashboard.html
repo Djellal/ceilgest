@@ -126,8 +126,40 @@
             </div>
         </div>
     </div>
-
-    <!-- Available Courses Section -->
-    {% include 'partials/courses_section.html' %}
+<!-- Available Courses Section with Enhanced Design -->
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h2 class="section-title">Available Courses</h2>
+            <div class="section-divider"></div>
+            <p class="lead">Explore our diverse range of courses designed to meet your learning needs</p>
+        </div>
+    </div>
+    
+    {% include 'partials/courses_section.html' %}    
+   
 </div>
+</div>
+
+<script>
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter courses
+            const filter = this.dataset.filter;
+            document.querySelectorAll('#courseGrid .col').forEach(card => {
+                if (filter === 'all' || card.dataset.courseType === filter) {
+                    card.style.display = 'block';
+                    card.classList.add('fade-in');
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    </script>
 {% endblock %}
+
