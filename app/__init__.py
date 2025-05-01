@@ -31,7 +31,7 @@ def create_app(config_class=Config):
     app.config['SQLALCHEMY_RECORD_QUERIES'] = True
     
     # Debug toolbar setup
-    app.config['DEBUG_TB_ENABLED'] = True
+    app.config['DEBUG_TB_ENABLED'] = False
     app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
     toolbar = DebugToolbarExtension(app)
     
